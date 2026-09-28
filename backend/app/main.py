@@ -16,8 +16,8 @@ async def lifespan(app: FastAPI):
     seed_demo_database()
 
     # Generate synthetic demo videos if not already present
-    from ..test_samples.generate_demo_assets import generate_all_scenarios
-    from ..config import TEST_SAMPLES_DIR
+    from backend.test_samples.generate_demo_assets import generate_all_scenarios
+    from .config import TEST_SAMPLES_DIR
     if not any(TEST_SAMPLES_DIR.glob("*.mp4")):
         try:
             generate_all_scenarios()
