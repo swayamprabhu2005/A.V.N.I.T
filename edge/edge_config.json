@@ -1,0 +1,11 @@
+{
+  "server_url": "http://localhost:8000",
+  "api_key": "AVNIT_EDGE_SECRET_POLE_01",
+  "camera_id": "ROAD-CAM-NH48-01",
+  "location": "NH-48 Highway Junction KM 42",
+  "rtsp_url": "0",
+  "fps_target": 20,
+  "confidence_threshold": 0.50,
+  "alert_threshold": 60.0,
+  "send_snapshots_on_alert": true
+}
