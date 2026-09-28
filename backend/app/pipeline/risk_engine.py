@@ -68,12 +68,20 @@ def evaluate_identity_risk(
             "plate_number": plate_number,
             "registered": False,
             "registration_record": None,
+            "registered_details": None,
             "observed_attributes": {
                 "type": observed_type,
                 "color": observed_color,
                 "make": observed_make or "Unknown",
                 "model": observed_model or "Unknown",
                 "ocr_confidence": round(ocr_confidence, 2)
+            },
+            "factors": {
+                "type_matched": False,
+                "score_type": 0.0,
+                "score_color": 0.0,
+                "score_ocr": round(ocr_confidence, 2),
+                "score_make_model": 0.0
             },
             "factor_scores": {
                 "type_match": 0.0,
@@ -165,12 +173,20 @@ def evaluate_identity_risk(
         "plate_number": plate_number,
         "registered": True,
         "registration_record": vehicle_record,
+        "registered_details": vehicle_record,
         "observed_attributes": {
             "type": observed_type,
             "color": observed_color,
             "make": observed_make or reg_make,
             "model": observed_model or reg_model,
             "ocr_confidence": round(ocr_confidence, 2)
+        },
+        "factors": {
+            "type_matched": type_matched,
+            "score_type": score_type,
+            "score_color": score_color,
+            "score_ocr": round(score_ocr, 2),
+            "score_make_model": round(score_make_model, 2)
         },
         "factor_scores": {
             "type_match": score_type,
