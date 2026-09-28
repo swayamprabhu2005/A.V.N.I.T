@@ -173,8 +173,11 @@ onMounted(() => {
   />
 
   <!-- 2. Live Command Center Dashboard (Shown once authenticated) -->
-  <div v-else class="min-h-screen bg-gradient-to-br from-[#faf7f2] via-[#f1ebe0] to-[#e4ded0] text-stone-900 flex flex-col font-sans selection:bg-amber-100 selection:text-amber-900">
+  <div v-else class="min-h-screen bg-gradient-to-r from-[#be123c] via-[#d97706] to-[#fbbf24] text-stone-900 flex flex-col font-sans selection:bg-rose-200 selection:text-rose-950 relative">
     
+    <!-- Subtle Ambient Dark Film (Maintains High-Contrast Readability) -->
+    <div class="fixed inset-0 bg-stone-950/12 pointer-events-none z-0"></div>
+
     <!-- Top Executive Header -->
     <AppHeader
       :channels="channels"
@@ -191,7 +194,7 @@ onMounted(() => {
     />
 
     <!-- Main Content Container with Warm Ambient Gradients (Zero Blue) -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 relative z-10">
 
       <!-- Dynamic High-Risk Status Banner -->
       <StatusBanner

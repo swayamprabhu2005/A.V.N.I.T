@@ -84,18 +84,19 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <header class="bg-white/80 backdrop-blur-md border-b border-stone-300 shadow-sm sticky top-0 z-40 transition-all">
+  <div class="h-1.5 w-full bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] z-50"></div>
+  <header class="bg-white/92 backdrop-blur-xl border-b border-white/50 shadow-md sticky top-0 z-40 transition-all">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
       <!-- Brand Identity -->
       <div class="flex items-center space-x-3">
-        <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-stone-900 shadow-md border border-stone-800">
+        <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-stone-900 shadow-md border border-amber-400/80">
           <img src="/AVNIT.png" alt="AVNIT Logo" class="w-7 h-7 object-contain drop-shadow" />
         </div>
         <div>
           <div class="flex items-center space-x-2">
             <h1 class="text-base font-black text-stone-900 tracking-tight font-sans">A.V.N.I.T.</h1>
-            <span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100/90 text-emerald-800 border border-emerald-300/80">
+            <span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
               <span>OPERATIONAL</span>
             </span>
@@ -108,7 +109,7 @@ onUnmounted(() => {
       <div class="hidden md:flex items-center space-x-4">
         
         <!-- Live Shift Clock -->
-        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-stone-100/80 border border-stone-300 text-stone-800 shadow-inner">
+        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-stone-100/90 border border-stone-300 text-stone-800 shadow-inner">
           <Clock class="w-3.5 h-3.5 text-stone-600" />
           <span class="text-xs font-mono font-bold tracking-wider">{{ currentTime }} IST</span>
         </div>
@@ -159,11 +160,11 @@ onUnmounted(() => {
           <button
             @click="showExportMenu = !showExportMenu"
             type="button"
-            class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-stone-900 hover:bg-stone-800 active:bg-black text-stone-100 shadow-md transition-all focus:outline-none cursor-pointer"
+            class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] hover:brightness-105 active:scale-[0.98] text-stone-950 shadow-md transition-all focus:outline-none cursor-pointer"
           >
-            <DownloadCloud class="w-3.5 h-3.5 text-stone-200" />
+            <DownloadCloud class="w-3.5 h-3.5 text-stone-950" />
             <span>Export</span>
-            <ChevronDown class="w-3 h-3 text-stone-400" />
+            <ChevronDown class="w-3 h-3 text-stone-900" />
           </button>
 
           <!-- Dropdown Menu -->

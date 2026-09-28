@@ -42,7 +42,7 @@ const observed = computed(() => {
 
 // Registered values from VAHAN database
 const registered = computed(() => {
-  const reg = props.riskResult?.registered_details
+  const reg = props.riskResult?.registered_details || props.riskResult?.registration_record
   if (!reg) {
     return {
       exists: false,
@@ -86,10 +86,11 @@ const statusMatch = computed(() => {
 </script>
 
 <template>
-  <div class="bg-white/85 backdrop-blur-md rounded-2xl border border-stone-300 shadow-md p-6 space-y-5 transition-all">
+  <div class="bg-white/92 backdrop-blur-xl rounded-2xl border border-white/60 shadow-xl p-6 space-y-5 transition-all relative overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
     
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-stone-200 pb-3">
+    <div class="flex items-center justify-between border-b border-stone-200 pb-3 pt-1">
       <div>
         <span class="text-[11px] font-bold text-stone-500 uppercase tracking-widest block">Identity Cross-Verification</span>
         <h3 class="text-sm font-black text-stone-900 tracking-tight">Observed Visuals vs. Registered Record</h3>

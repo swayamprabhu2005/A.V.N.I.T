@@ -115,14 +115,15 @@ onMounted(() => {
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-sm animate-in fade-in duration-150"
   >
     <div
-      class="bg-white rounded-2xl border border-zinc-200 shadow-modal w-full max-w-3xl overflow-hidden flex flex-col max-h-[85vh] animate-in zoom-in-95 duration-150"
+      class="bg-white rounded-2xl border border-white/60 shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[85vh] animate-in zoom-in-95 duration-150 relative"
     >
+      <div class="h-1.5 w-full bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
       
       <!-- Modal Header -->
       <div class="px-6 py-4 border-b border-zinc-100 flex items-center justify-between">
         <div class="flex items-center space-x-2.5">
-          <div class="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center text-white">
-            <Database class="w-4 h-4" />
+          <div class="w-8 h-8 rounded-lg bg-stone-900 flex items-center justify-center text-white shadow-sm border border-amber-400/60">
+            <Database class="w-4 h-4 text-amber-400" />
           </div>
           <div>
             <h3 class="text-sm font-bold text-zinc-900 font-sans">VAHAN Vehicle Registry Management</h3>
@@ -153,9 +154,9 @@ onMounted(() => {
         <button
           @click="isAdding = !isAdding"
           type="button"
-          class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 hover:bg-zinc-800 text-white shadow-sm transition-colors"
+          class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] hover:brightness-105 active:scale-[0.98] text-stone-950 shadow-md transition-colors cursor-pointer"
         >
-          <Plus class="w-3.5 h-3.5" />
+          <Plus class="w-3.5 h-3.5 text-stone-950" />
           <span>{{ isAdding ? 'Cancel Form' : 'Register Vehicle' }}</span>
         </button>
       </div>
@@ -232,7 +233,7 @@ onMounted(() => {
           <button
             @click="handleAddVehicle"
             type="button"
-            class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+            class="px-4 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] hover:brightness-105 active:scale-[0.98] text-stone-950 shadow-md cursor-pointer"
           >
             Save Vehicle
           </button>

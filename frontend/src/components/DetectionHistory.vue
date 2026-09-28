@@ -76,7 +76,8 @@ const getVerdictBadge = (score, level) => {
 </script>
 
 <template>
-  <div class="bg-white rounded-xl border border-zinc-200/90 shadow-card overflow-hidden flex flex-col">
+  <div class="bg-white/92 backdrop-blur-xl rounded-2xl border border-white/60 shadow-xl overflow-hidden flex flex-col relative">
+    <div class="h-1 w-full bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
     
     <!-- Top Filter & Search Header -->
     <div class="px-5 py-4 border-b border-zinc-100 flex flex-wrap items-center justify-between gap-3">

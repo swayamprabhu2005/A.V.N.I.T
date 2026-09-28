@@ -42,12 +42,13 @@ const isWarning = computed(() => {
   >
     <div
       v-if="visible && (isHighRisk || isWarning)"
-      class="rounded-xl border shadow-card p-4 transition-all"
+      class="rounded-2xl border shadow-xl transition-all overflow-hidden relative"
       :class="isHighRisk
         ? 'bg-rose-50/95 border-rose-300 text-rose-900'
         : 'bg-amber-50/95 border-amber-300 text-amber-900'"
     >
-      <div class="flex items-start justify-between">
+      <div class="h-1 w-full bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
+      <div class="p-4 flex items-start justify-between">
         <div class="flex items-start space-x-3">
           <div
             class="p-2 rounded-lg flex-shrink-0 mt-0.5"

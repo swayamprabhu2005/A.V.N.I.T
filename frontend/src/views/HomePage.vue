@@ -79,38 +79,40 @@ const handleMicrosoftSSO = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-[#faf7f2] via-[#f1ebe0] to-[#e4ded0] text-stone-900 flex flex-col font-sans selection:bg-amber-100 selection:text-amber-900 relative overflow-hidden">
+  <div class="min-h-screen bg-gradient-to-r from-[#be123c] via-[#d97706] to-[#fbbf24] text-stone-900 flex flex-col font-sans selection:bg-rose-200 selection:text-rose-950 relative overflow-hidden">
     
-    <!-- Ambient Warm Geometric Gradients (Zero Blue) -->
-    <div class="absolute top-0 left-1/4 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2"></div>
-    <div class="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl pointer-events-none translate-y-1/2"></div>
+    <!-- Ambient Depth Overlay (Zero Blue) -->
+    <div class="absolute inset-0 bg-stone-950/10 pointer-events-none"></div>
+
+    <!-- Top Left-to-Right Accent Ribbon -->
+    <div class="h-1.5 w-full bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] z-50"></div>
 
     <!-- Top Navigation Header -->
-    <header class="w-full border-b border-stone-300/80 bg-white/70 backdrop-blur-md sticky top-0 z-50">
+    <header class="w-full border-b border-white/30 bg-white/85 backdrop-blur-xl sticky top-0 z-40 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
         
         <div class="flex items-center space-x-3.5">
           <img
             src="/AVNIT.png"
             alt="AVNIT Emblem"
-            class="w-10 h-10 rounded-xl shadow-md border border-stone-300/80 object-cover"
+            class="w-10 h-10 rounded-xl shadow-md border border-amber-400/80 object-cover"
           />
           <div>
             <div class="flex items-center space-x-2">
               <span class="text-xl font-black tracking-wider text-stone-900">A.V.N.I.T.</span>
-              <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-stone-900 text-stone-100">Enterprise</span>
+              <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-gradient-to-r from-[#be123c] via-[#d97706] to-[#fbbf24] text-white shadow-xs">Enterprise</span>
             </div>
             <p class="text-xs text-stone-600 font-medium tracking-tight">Automated Vehicle Identity & Tampering Detection</p>
           </div>
         </div>
 
         <div class="hidden md:flex items-center space-x-4 text-xs font-semibold text-stone-700">
-          <div class="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-100/80 text-emerald-800 border border-emerald-300/60">
+          <div class="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-100/90 text-emerald-800 border border-emerald-300">
             <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
             <span>Vision Nodes Online</span>
           </div>
-          <div class="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-stone-200/80 text-stone-800 border border-stone-300/60">
-            <Database class="w-3.5 h-3.5 text-stone-600" />
+          <div class="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-100/90 text-amber-900 border border-amber-300">
+            <Database class="w-3.5 h-3.5 text-amber-700" />
             <span>VAHAN Gateway Ready</span>
           </div>
         </div>
@@ -124,27 +126,28 @@ const handleMicrosoftSSO = async () => {
       <!-- Left Column: System Vision & Capabilities -->
       <div class="flex-1 space-y-6 text-left max-w-2xl">
         
-        <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-stone-900/5 border border-stone-400/30 text-stone-800 text-xs font-semibold">
+        <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-white/60 text-stone-900 text-xs font-bold shadow-md">
           <ShieldCheck class="w-4 h-4 text-emerald-700" />
           <span>Next-Generation Intelligent Transportation Security</span>
         </div>
 
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-stone-950 tracking-tight leading-[1.1]">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] drop-shadow-md">
           Autonomous Vehicle <br/>
-          <span class="bg-gradient-to-r from-stone-900 via-amber-900 to-stone-800 bg-clip-text text-transparent">Identity Verification</span> <br/>
+          <span class="bg-gradient-to-r from-rose-100 via-amber-100 to-yellow-200 bg-clip-text text-transparent">Identity Verification</span> <br/>
           & Tampering Detection
         </h1>
 
-        <p class="text-stone-700 text-base sm:text-lg leading-relaxed font-normal">
+        <p class="text-white/95 text-base sm:text-lg leading-relaxed font-medium drop-shadow-sm">
           Beyond conventional OCR. A.V.N.I.T. combines deep neural network tracking with real-time VAHAN motor registry cross-referencing to instantly intercept cloned plates, altered characters, and swapped registrations across national highways.
         </p>
 
-        <!-- Feature Grid (Warm Slate/Stone Cards, Zero Blue) -->
+        <!-- Feature Grid (Frosted Glass Cards with Crimson-Gold Accent Bars) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
           
-          <div class="p-4 rounded-xl bg-white/80 backdrop-blur-sm border border-stone-300/80 shadow-sm hover:shadow-md transition-shadow">
+          <div class="relative overflow-hidden p-5 rounded-2xl bg-white/90 backdrop-blur-xl border border-white/60 shadow-xl hover:shadow-2xl transition-all">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
             <div class="flex items-center space-x-3 mb-2">
-              <div class="p-2 rounded-lg bg-stone-100 text-stone-800">
+              <div class="p-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-200">
                 <Camera class="w-5 h-5" />
               </div>
               <h3 class="font-bold text-stone-900 text-sm">Best-Frame Snapshot Capture</h3>
@@ -154,9 +157,10 @@ const handleMicrosoftSSO = async () => {
             </p>
           </div>
 
-          <div class="p-4 rounded-xl bg-white/80 backdrop-blur-sm border border-stone-300/80 shadow-sm hover:shadow-md transition-shadow">
+          <div class="relative overflow-hidden p-5 rounded-2xl bg-white/90 backdrop-blur-xl border border-white/60 shadow-xl hover:shadow-2xl transition-all">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
             <div class="flex items-center space-x-3 mb-2">
-              <div class="p-2 rounded-lg bg-emerald-100 text-emerald-800">
+              <div class="p-2 rounded-xl bg-amber-50 text-amber-700 border border-amber-200">
                 <Cpu class="w-5 h-5" />
               </div>
               <h3 class="font-bold text-stone-900 text-sm">4-Factor Bayesian Risk</h3>
@@ -173,9 +177,10 @@ const handleMicrosoftSSO = async () => {
       <!-- Right Column: Authentication Card with SSO & Serial Login -->
       <div class="w-full max-w-md">
         
-        <div class="bg-white/95 backdrop-blur-xl border border-stone-300 shadow-2xl rounded-2xl p-7 space-y-6">
+        <div class="bg-white/95 backdrop-blur-2xl border border-white/70 shadow-2xl rounded-3xl p-7 space-y-6 relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
           
-          <div class="text-center space-y-1.5 border-b border-stone-200 pb-5">
+          <div class="text-center space-y-1.5 border-b border-stone-200 pb-5 pt-1">
             <div class="inline-flex p-3 rounded-2xl bg-stone-100 border border-stone-200 text-stone-900 mb-2">
               <Shield class="w-6 h-6 text-stone-800" />
             </div>
@@ -275,11 +280,11 @@ const handleMicrosoftSSO = async () => {
             <button
               type="submit"
               :disabled="isLoading"
-              class="w-full py-3 px-4 rounded-xl bg-stone-900 hover:bg-stone-800 active:bg-black text-stone-100 font-bold text-sm tracking-wide transition-all shadow-lg shadow-stone-900/20 flex items-center justify-center space-x-2 group cursor-pointer"
+              class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] hover:brightness-105 active:scale-[0.99] text-stone-950 font-black text-sm tracking-wide transition-all shadow-xl shadow-rose-950/20 flex items-center justify-center space-x-2 group cursor-pointer"
             >
-              <span v-if="isLoading" class="inline-block w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+              <span v-if="isLoading" class="inline-block w-4 h-4 border-2 border-stone-900/30 border-t-stone-900 rounded-full animate-spin"></span>
               <span v-else>Authenticate & Enter Command Center</span>
-              <ArrowRight class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
 
           </form>
@@ -295,10 +300,10 @@ const handleMicrosoftSSO = async () => {
     </main>
 
     <!-- Bottom Footer -->
-    <footer class="w-full border-t border-stone-300/80 bg-white/50 backdrop-blur-sm py-4">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-600 gap-2">
+    <footer class="w-full border-t border-white/20 bg-stone-950/30 backdrop-blur-md py-4">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-rose-50/90 gap-2">
         <p>© 2026 A.V.N.I.T. Intelligent Highway Safety & Motor Vehicle Fraud Detection.</p>
-        <p class="font-mono text-[11px]">System Kernel v2.4.0 (WAL-DB Active)</p>
+        <p class="font-mono text-[11px] text-amber-200">System Kernel v2.4.0 (WAL-DB Active)</p>
       </div>
     </footer>
 

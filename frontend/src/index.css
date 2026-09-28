@@ -5,29 +5,40 @@
 @layer base {
   body {
     @apply text-stone-900 font-sans antialiased;
-    background: radial-gradient(circle at 10% 15%, rgba(217, 119, 6, 0.04) 0%, transparent 45%),
-                radial-gradient(circle at 90% 85%, rgba(5, 150, 105, 0.04) 0%, transparent 45%),
-                linear-gradient(135deg, #faf7f2 0%, #f2ece0 50%, #e5dfd2 100%);
+    background: linear-gradient(to right, #be123c 0%, #ea580c 35%, #d97706 65%, #f59e0b 85%, #fbbf24 100%);
     background-attachment: fixed;
+    min-height: 100vh;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
-/* Custom Sleek Scrollbar (Zero Blue Stone/Amber) */
+/* Custom Sleek Scrollbar (Zero Blue Crimson/Amber/Solar Gold) */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1ede4;
+  background: rgba(190, 18, 60, 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d6cfc2;
+  background: linear-gradient(to bottom, #e11d48, #d97706, #fbbf24);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b8af9f;
+  background: linear-gradient(to bottom, #be123c, #b45309, #d97706);
 }
+
+/* Reusable Vivid Crimson to Solar Gold Left-to-Right Gradient Utilities */
+.bg-gradient-crimson-gold {
+  background: linear-gradient(to right, #e11d48 0%, #d97706 50%, #fbbf24 100%);
+}
+
+.text-gradient-crimson-gold {
+  background: linear-gradient(to right, #e11d48 0%, #d97706 50%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+

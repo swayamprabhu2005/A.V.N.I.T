@@ -121,10 +121,11 @@ const breakdown = computed(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-xl border border-zinc-200/90 shadow-card p-5 flex flex-col justify-between">
+  <div class="bg-white/92 backdrop-blur-xl rounded-2xl border border-white/60 shadow-xl p-5 flex flex-col justify-between relative overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
     
     <!-- Top Header -->
-    <div class="flex items-center justify-between border-b border-zinc-100 pb-3">
+    <div class="flex items-center justify-between border-b border-zinc-100 pb-3 pt-1">
       <div>
         <h2 class="text-xs font-bold uppercase tracking-wider text-zinc-500">Bayesian Risk Engine</h2>
         <p class="text-sm font-bold text-zinc-900 font-sans">Multi-Factor Integrity Assessment</p>

@@ -112,10 +112,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-xl border border-zinc-200/90 shadow-card overflow-hidden flex flex-col">
+  <div class="bg-white/92 backdrop-blur-xl rounded-2xl border border-white/60 shadow-xl overflow-hidden flex flex-col relative">
+    <div class="h-1 w-full bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
     
     <!-- Top Player Meta Bar -->
-    <div class="px-4 py-2.5 bg-zinc-50 border-b border-zinc-200/80 flex items-center justify-between">
+    <div class="px-4 py-2.5 bg-stone-50/90 border-b border-stone-200/80 flex items-center justify-between">
       <div class="flex items-center space-x-2.5">
         <span class="relative flex h-2.5 w-2.5">
           <span
@@ -209,21 +210,21 @@ onUnmounted(() => {
         <button
           @click="handleToggleStream"
           type="button"
-          class="inline-flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-semibold shadow-sm transition-all focus:outline-none"
+          class="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-black shadow-md transition-all focus:outline-none cursor-pointer"
           :class="isStreaming
             ? 'bg-rose-600 hover:bg-rose-700 text-white'
-            : 'bg-zinc-900 hover:bg-zinc-800 text-white'"
+            : 'bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] hover:brightness-105 active:scale-[0.98] text-stone-950'"
         >
           <Square v-if="isStreaming" class="w-3.5 h-3.5 fill-current" />
-          <Play v-else class="w-3.5 h-3.5 fill-current" />
+          <Play v-else class="w-3.5 h-3.5 fill-current text-stone-950" />
           <span>{{ isStreaming ? 'Halt Feed' : 'Start Feed' }}</span>
         </button>
 
         <!-- Custom Video File Upload -->
         <label
-          class="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-white hover:bg-zinc-100 text-zinc-700 border border-zinc-300 shadow-sm cursor-pointer transition-colors"
+          class="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 shadow-sm cursor-pointer transition-colors"
         >
-          <Upload class="w-3.5 h-3.5 text-zinc-500" />
+          <Upload class="w-3.5 h-3.5 text-stone-500" />
           <span>Upload File</span>
           <input
             type="file"
@@ -236,19 +237,19 @@ onUnmounted(() => {
 
       <!-- Plate Simulator Override Control -->
       <div class="flex items-center space-x-2">
-        <div class="flex items-center bg-white border border-zinc-300 rounded-lg px-2.5 py-1 shadow-sm focus-within:border-zinc-500 transition-colors">
-          <Sparkles class="w-3.5 h-3.5 text-zinc-400 mr-2" />
+        <div class="flex items-center bg-white border border-stone-300 rounded-xl px-2.5 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
+          <Sparkles class="w-3.5 h-3.5 text-amber-500 mr-2" />
           <input
             v-model="simulatedPlateInput"
             @keyup.enter="handleOverrideSubmit"
             placeholder="Override Plate (e.g. MH12DE1433)"
-            class="text-xs font-mono font-semibold uppercase text-zinc-800 placeholder:text-zinc-400 focus:outline-none w-44 sm:w-52"
+            class="text-xs font-mono font-semibold uppercase text-stone-800 placeholder:text-stone-400 focus:outline-none w-44 sm:w-52"
           />
         </div>
         <button
           @click="handleOverrideSubmit"
           type="button"
-          class="px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-200 hover:bg-zinc-300 text-zinc-800 transition-colors"
+          class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 transition-colors cursor-pointer shadow-xs"
         >
           Apply
         </button>
