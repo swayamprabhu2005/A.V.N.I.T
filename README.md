@@ -184,15 +184,31 @@ python -m pytest backend/tests
 ```
 *(All 16 unit tests will verify the database, risk scoring engine, OCR normalizer, and edge API endpoints).*
 
-### Step 4: Start the Backend Server
+---
+
+### ⚡ One-Click Full Project Launch (Recommended)
+You can start both the **FastAPI backend** and **Vue 3 frontend dashboard** simultaneously with one command:
+```powershell
+.\run.bat
+```
+* Automatically detects or activates your Python environment.
+* Launches the backend API on `http://localhost:8000`.
+* Launches the Vue 3 + Vite dashboard on `http://localhost:5173`.
+* Automatically opens your default web browser to the dashboard.
+
+---
+
+### Alternative: Manual Step-by-Step Launch
+
+#### Step 4A: Start the Backend Server
 ```powershell
 python -m uvicorn backend.app.main:app --reload --port 8000
 ```
 * Backend API live at: `http://localhost:8000`
 * Interactive API Documentation: `http://localhost:8000/docs`
 
-### Step 5: Start the Frontend Dashboard
-Open a new terminal window:
+#### Step 4B: Start the Frontend Dashboard
+Open a second terminal window:
 ```powershell
 cd frontend
 npm install

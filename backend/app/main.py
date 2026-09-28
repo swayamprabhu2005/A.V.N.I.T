@@ -51,10 +51,10 @@ app.include_router(ws_router)
 def health_check():
     return {"status": "healthy"}
 
-# Mount pre-built React frontend if dist exists
+# Mount pre-built Vue frontend if dist exists
 FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
 if FRONTEND_DIST.exists():
-    print(f"[A.V.N.I.T.] Serving React frontend from: {FRONTEND_DIST}")
+    print(f"[A.V.N.I.T.] Serving Vue 3 frontend from: {FRONTEND_DIST}")
     app.mount("/", StaticFiles(directory=str(FRONTEND_DIST), html=True), name="frontend")
 else:
     @app.get("/")
