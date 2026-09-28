@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, Query, UploadFile, File
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
+from pathlib import Path
 import os
 import shutil
 from ..database import (
@@ -10,7 +12,8 @@ from ..database import (
     update_vehicle,
     delete_vehicle,
     list_alerts,
-    get_stats
+    get_stats,
+    log_event
 )
 from ..config import (
     TEST_SAMPLES_DIR,
@@ -146,3 +149,81 @@ def check_system_status():
         },
         "specs": "4GB RAM CPU Optimized Engine"
     }
+
+# 5. Roadside & Government Camera Edge Telemetry Ingress
+EDGE_DIR = Path(__file__).resolve().parent.parent.parent.parent / "edge"
+
+class EdgeTelemetrySchema(BaseModel):
+    camera_id: str = Field(..., json_schema_extra={"example": "DELHI-NH48-POLE-14"})
+    location: str = Field(default="NH-48 KM 24", json_schema_extra={"example": "NH-48 KM 24"})
+    plate_number: str = Field(..., json_schema_extra={"example": "MH12DE1433"})
+    vehicle_type: str = Field(..., json_schema_extra={"example": "car"})
+    observed_color: str = Field(..., json_schema_extra={"example": "white"})
+    ocr_confidence: float = Field(default=0.95, ge=0.0, le=1.0)
+    risk_score: float = Field(..., ge=0.0, le=100.0)
+    risk_level: str = Field(..., json_schema_extra={"example": "GREEN"})
+    reason: str = Field(default="Identity Verified")
+    observed_make: Optional[str] = ""
+    observed_model: Optional[str] = ""
+    snapshot_base64: Optional[str] = None
+    is_night_mode: Optional[bool] = False
+    timestamp: Optional[str] = None
+
+@router.post("/telemetry/ingress", status_code=201)
+async def ingest_edge_telemetry(payload: EdgeTelemetrySchema):
+    """
+    Receives autonomous telemetry pings from roadside edge camera agents.
+    Persists detection and alert events to SQLite and broadcasts to live dashboards.
+    """
+    alert_id = log_event(
+        track_id=0,
+        plate_number=payload.plate_number,
+        ocr_confidence=payload.ocr_confidence,
+        observed_type=payload.vehicle_type,
+        observed_color=payload.observed_color,
+        risk_score=payload.risk_score,
+        risk_level=payload.risk_level,
+        reason=f"[{payload.camera_id} @ {payload.location}] {payload.reason}",
+        observed_make=payload.observed_make or "",
+        observed_model=payload.observed_model or ""
+    )
+
+    # Broadcast to connected dashboard WebSockets
+    try:
+        from .websocket import broadcast_edge_event
+        data = payload.model_dump() if hasattr(payload, "model_dump") else payload.dict()
+        await broadcast_edge_event(data)
+    except Exception:
+        pass
+
+    return {
+        "status": "received",
+        "alert_id": alert_id,
+        "camera_id": payload.camera_id,
+        "risk_level": payload.risk_level
+    }
+
+@router.get("/edge/agent-script")
+def download_edge_agent():
+    """Serves the standalone autonomous roadside edge agent script for deployment."""
+    script_path = EDGE_DIR / "avnit_edge_agent.py"
+    if not script_path.exists():
+        raise HTTPException(status_code=404, detail="Edge agent script not found on server.")
+    return FileResponse(
+        path=str(script_path),
+        filename="avnit_edge_agent.py",
+        media_type="text/x-python"
+    )
+
+@router.get("/edge/default-config")
+def download_edge_config():
+    """Serves the default JSON configuration template for roadside edge agents."""
+    config_path = EDGE_DIR / "edge_config.json"
+    if not config_path.exists():
+        raise HTTPException(status_code=404, detail="Edge config template not found on server.")
+    return FileResponse(
+        path=str(config_path),
+        filename="edge_config.json",
+        media_type="application/json"
+    )
+

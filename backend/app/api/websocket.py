@@ -11,10 +11,30 @@ ws_router = APIRouter()
 # Instantiate singleton pipeline engine
 pipeline_engine = PipelineCoordinator()
 
+active_connections: set = set()
+
+async def broadcast_edge_event(event_data: dict):
+    """Broadcasts external roadside telemetry events to all active dashboard WebSocket clients."""
+    if not active_connections:
+        return
+    message = json.dumps({
+        "type": "edge_telemetry",
+        "data": event_data
+    })
+    disconnected = set()
+    for ws in active_connections:
+        try:
+            await ws.send_text(message)
+        except Exception:
+            disconnected.add(ws)
+    for ws in disconnected:
+        active_connections.discard(ws)
+
 @ws_router.websocket("/ws/stream")
 async def websocket_stream_endpoint(websocket: WebSocket):
     await websocket.accept()
-    print("[AVNIT WebSocket] Client connected to live stream.")
+    active_connections.add(websocket)
+    print(f"[AVNIT WebSocket] Client connected to live stream. Total active: {len(active_connections)}")
 
     cap = None
     is_running = False
@@ -41,6 +61,10 @@ async def websocket_stream_endpoint(websocket: WebSocket):
                     if source_type == "webcam":
                         print("[AVNIT WebSocket] Opening webcam device 0...")
                         cap = cv2.VideoCapture(0)
+                    elif source_type == "rtsp":
+                        rtsp_url = msg.get("rtsp_url", "")
+                        print(f"[AVNIT WebSocket] Opening RTSP network camera: {rtsp_url}")
+                        cap = cv2.VideoCapture(rtsp_url)
                     else:
                         video_path = str(TEST_SAMPLES_DIR / scenario_filename)
                         print(f"[AVNIT WebSocket] Opening video scenario: {video_path}")
@@ -100,5 +124,7 @@ async def websocket_stream_endpoint(websocket: WebSocket):
     except Exception as e:
         print(f"[AVNIT WebSocket] Stream error: {e}")
     finally:
+        active_connections.discard(websocket)
         if cap is not None:
             cap.release()
+
