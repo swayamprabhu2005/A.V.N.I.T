@@ -58,7 +58,7 @@ const copyCommand = () => {
     <div
       class="bg-white rounded-2xl border border-white/60 shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-150 relative"
     >
-      <div class="h-1.5 w-full bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
+      <div class="h-1.5 w-full bg-gradient-to-r from-[#743E63] via-[#974A5E] via-[#BF5E65] via-[#E95350] to-[#F27951]"></div>
       
       <!-- Modal Header -->
       <div class="px-6 py-4 border-b border-zinc-100 flex items-center justify-between">
@@ -149,7 +149,7 @@ const copyCommand = () => {
           <button
             @click="handleConnect"
             type="button"
-            class="px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] hover:brightness-105 active:scale-[0.98] text-stone-950 shadow-md transition-all cursor-pointer"
+            class="px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-[#974A5E] via-[#E95350] to-[#F27951] hover:brightness-105 active:scale-[0.98] text-white shadow-md shadow-[#703A40]/30 transition-all cursor-pointer"
           >
             Connect Camera Stream
           </button>

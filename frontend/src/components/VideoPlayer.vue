@@ -112,8 +112,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="bg-white/92 backdrop-blur-xl rounded-2xl border border-white/60 shadow-xl overflow-hidden flex flex-col relative">
-    <div class="h-1 w-full bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
+  <div class="bg-white/92 backdrop-blur-xl rounded-2xl border border-[#743E63]/25 shadow-xl overflow-hidden flex flex-col relative">
+    <div class="h-1 w-full bg-gradient-to-r from-[#743E63] via-[#974A5E] via-[#BF5E65] via-[#E95350] to-[#F27951]"></div>
     
     <!-- Top Player Meta Bar -->
     <div class="px-4 py-2.5 bg-stone-50/90 border-b border-stone-200/80 flex items-center justify-between">
@@ -207,16 +207,16 @@ onUnmounted(() => {
       
       <!-- Primary Playback Controls -->
       <div class="flex items-center space-x-2">
-        <button
+          <button
           @click="handleToggleStream"
           type="button"
           class="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-black shadow-md transition-all focus:outline-none cursor-pointer"
           :class="isStreaming
             ? 'bg-rose-600 hover:bg-rose-700 text-white'
-            : 'bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] hover:brightness-105 active:scale-[0.98] text-stone-950'"
+            : 'bg-gradient-to-r from-[#974A5E] via-[#E95350] to-[#F27951] hover:brightness-105 active:scale-[0.98] text-white shadow-md shadow-[#703A40]/30'"
         >
           <Square v-if="isStreaming" class="w-3.5 h-3.5 fill-current" />
-          <Play v-else class="w-3.5 h-3.5 fill-current text-stone-950" />
+          <Play v-else class="w-3.5 h-3.5 fill-current text-white" />
           <span>{{ isStreaming ? 'Halt Feed' : 'Start Feed' }}</span>
         </button>
 
@@ -237,8 +237,8 @@ onUnmounted(() => {
 
       <!-- Plate Simulator Override Control -->
       <div class="flex items-center space-x-2">
-        <div class="flex items-center bg-white border border-stone-300 rounded-xl px-2.5 py-1.5 shadow-sm focus-within:border-amber-500 transition-colors">
-          <Sparkles class="w-3.5 h-3.5 text-amber-500 mr-2" />
+        <div class="flex items-center bg-white border border-stone-300 rounded-xl px-2.5 py-1.5 shadow-sm focus-within:border-[#F27951] transition-colors">
+          <Sparkles class="w-3.5 h-3.5 text-[#F27951] mr-2" />
           <input
             v-model="simulatedPlateInput"
             @keyup.enter="handleOverrideSubmit"
@@ -249,7 +249,7 @@ onUnmounted(() => {
         <button
           @click="handleOverrideSubmit"
           type="button"
-          class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 transition-colors cursor-pointer shadow-xs"
+          class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#F27951]/15 hover:bg-[#F27951]/25 text-[#703A40] border border-[#F27951]/40 transition-colors cursor-pointer shadow-xs"
         >
           Apply
         </button>

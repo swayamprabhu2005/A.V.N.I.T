@@ -117,13 +117,13 @@ onMounted(() => {
     <div
       class="bg-white rounded-2xl border border-white/60 shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[85vh] animate-in zoom-in-95 duration-150 relative"
     >
-      <div class="h-1.5 w-full bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
+      <div class="h-1.5 w-full bg-gradient-to-r from-[#743E63] via-[#974A5E] via-[#BF5E65] via-[#E95350] to-[#F27951]"></div>
       
       <!-- Modal Header -->
       <div class="px-6 py-4 border-b border-zinc-100 flex items-center justify-between">
         <div class="flex items-center space-x-2.5">
-          <div class="w-8 h-8 rounded-lg bg-stone-900 flex items-center justify-center text-white shadow-sm border border-amber-400/60">
-            <Database class="w-4 h-4 text-amber-400" />
+          <div class="w-8 h-8 rounded-lg bg-stone-900 flex items-center justify-center text-white shadow-sm border border-[#974A5E]/80">
+            <Database class="w-4 h-4 text-[#F27951]" />
           </div>
           <div>
             <h3 class="text-sm font-bold text-zinc-900 font-sans">VAHAN Vehicle Registry Management</h3>
@@ -154,9 +154,9 @@ onMounted(() => {
         <button
           @click="isAdding = !isAdding"
           type="button"
-          class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] hover:brightness-105 active:scale-[0.98] text-stone-950 shadow-md transition-colors cursor-pointer"
+          class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-[#974A5E] via-[#E95350] to-[#F27951] hover:brightness-105 active:scale-[0.98] text-white shadow-md shadow-[#703A40]/30 transition-colors cursor-pointer"
         >
-          <Plus class="w-3.5 h-3.5 text-stone-950" />
+          <Plus class="w-3.5 h-3.5 text-white" />
           <span>{{ isAdding ? 'Cancel Form' : 'Register Vehicle' }}</span>
         </button>
       </div>
@@ -233,7 +233,7 @@ onMounted(() => {
           <button
             @click="handleAddVehicle"
             type="button"
-            class="px-4 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] hover:brightness-105 active:scale-[0.98] text-stone-950 shadow-md cursor-pointer"
+            class="px-4 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-[#974A5E] via-[#E95350] to-[#F27951] hover:brightness-105 active:scale-[0.98] text-white shadow-md shadow-[#703A40]/30 cursor-pointer"
           >
             Save Vehicle
           </button>

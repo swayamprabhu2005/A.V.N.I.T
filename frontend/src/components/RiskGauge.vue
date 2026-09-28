@@ -121,8 +121,8 @@ const breakdown = computed(() => {
 </script>
 
 <template>
-  <div class="bg-white/92 backdrop-blur-xl rounded-2xl border border-white/60 shadow-xl p-5 flex flex-col justify-between relative overflow-hidden">
-    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
+  <div class="bg-white/92 backdrop-blur-xl rounded-2xl border border-[#743E63]/25 shadow-xl p-5 flex flex-col justify-between relative overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#743E63] via-[#974A5E] via-[#BF5E65] via-[#E95350] to-[#F27951]"></div>
     
     <!-- Top Header -->
     <div class="flex items-center justify-between border-b border-zinc-100 pb-3 pt-1">

@@ -47,7 +47,7 @@ const isWarning = computed(() => {
         ? 'bg-rose-50/95 border-rose-300 text-rose-900'
         : 'bg-amber-50/95 border-amber-300 text-amber-900'"
     >
-      <div class="h-1 w-full bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24]"></div>
+      <div class="h-1 w-full bg-gradient-to-r from-[#743E63] via-[#974A5E] via-[#BF5E65] via-[#E95350] to-[#F27951]"></div>
       <div class="p-4 flex items-start justify-between">
         <div class="flex items-start space-x-3">
           <div

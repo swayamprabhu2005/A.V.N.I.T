@@ -173,10 +173,10 @@ onMounted(() => {
   />
 
   <!-- 2. Live Command Center Dashboard (Shown once authenticated) -->
-  <div v-else class="min-h-screen bg-gradient-to-r from-[#be123c] via-[#d97706] to-[#fbbf24] text-stone-900 flex flex-col font-sans selection:bg-rose-200 selection:text-rose-950 relative">
+  <div v-else class="min-h-screen bg-gradient-to-r from-[#180D13] via-[#331A3F] to-[#4C2335] text-stone-900 flex flex-col font-sans selection:bg-[#743E63] selection:text-white relative">
     
     <!-- Subtle Ambient Dark Film (Maintains High-Contrast Readability) -->
-    <div class="fixed inset-0 bg-stone-950/12 pointer-events-none z-0"></div>
+    <div class="fixed inset-0 bg-stone-950/15 pointer-events-none z-0"></div>
 
     <!-- Top Executive Header -->
     <AppHeader

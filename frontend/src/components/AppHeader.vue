@@ -84,13 +84,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="h-1.5 w-full bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] z-50"></div>
-  <header class="bg-white/92 backdrop-blur-xl border-b border-white/50 shadow-md sticky top-0 z-40 transition-all">
+  <div class="h-1.5 w-full bg-gradient-to-r from-[#743E63] via-[#974A5E] via-[#BF5E65] via-[#E95350] to-[#F27951] z-50"></div>
+  <header class="bg-white/92 backdrop-blur-xl border-b border-[#743E63]/25 shadow-md sticky top-0 z-40 transition-all">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
       <!-- Brand Identity -->
       <div class="flex items-center space-x-3">
-        <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-stone-900 shadow-md border border-amber-400/80">
+        <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-stone-900 shadow-md border border-[#974A5E]/80">
           <img src="/AVNIT.png" alt="AVNIT Logo" class="w-7 h-7 object-contain drop-shadow" />
         </div>
         <div>
@@ -160,11 +160,11 @@ onUnmounted(() => {
           <button
             @click="showExportMenu = !showExportMenu"
             type="button"
-            class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-[#e11d48] via-[#d97706] to-[#fbbf24] hover:brightness-105 active:scale-[0.98] text-stone-950 shadow-md transition-all focus:outline-none cursor-pointer"
+            class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-[#974A5E] via-[#E95350] to-[#F27951] hover:brightness-105 active:scale-[0.98] text-white shadow-md shadow-[#703A40]/30 transition-all focus:outline-none cursor-pointer"
           >
-            <DownloadCloud class="w-3.5 h-3.5 text-stone-950" />
+            <DownloadCloud class="w-3.5 h-3.5 text-white" />
             <span>Export</span>
-            <ChevronDown class="w-3 h-3 text-stone-900" />
+            <ChevronDown class="w-3 h-3 text-white/80" />
           </button>
 
           <!-- Dropdown Menu -->
