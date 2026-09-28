@@ -37,15 +37,16 @@ class PipelineCoordinator:
         except Exception as e:
             print(f"[AVNIT] Warning: EasyOCR not available ({e}). Fallback to simulation/text parsing.")
 
-    def run_ocr(self, plate_crop: np.ndarray) -> Tuple[str, float]:
-        """Runs OCR on the cropped license plate image."""
+    def run_ocr(self, plate_crop: np.ndarray, is_night_mode: bool = False) -> Tuple[str, float]:
+        """Runs OCR on the cropped license plate image with adaptive contrast enhancement."""
         if plate_crop is None or plate_crop.size == 0 or self.easyocr_reader is None:
             return "", 0.0
 
         try:
-            # Preprocess plate crop: grayscale + contrast stretch
+            # Preprocess plate crop: grayscale + adaptive CLAHE
             gray = cv2.cvtColor(plate_crop, cv2.COLOR_BGR2GRAY)
-            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+            clip_limit = 3.5 if is_night_mode else 2.0
+            clahe = cv2.createCLAHE(clipLimit=clip_limit, tileGridSize=(8, 8))
             enhanced = clahe.apply(gray)
             
             results = self.easyocr_reader.readtext(enhanced)
@@ -76,6 +77,12 @@ class PipelineCoordinator:
 
         annotated_frame = frame.copy()
         h_frame, w_frame, _ = frame.shape
+
+        # Automatic Night Mode Detection (Luminance < 50 or Saturation < 18)
+        hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        mean_val = float(np.mean(hsv_frame[:, :, 2]))
+        mean_sat = float(np.mean(hsv_frame[:, :, 1]))
+        is_night_mode = bool(mean_val < 50.0 or mean_sat < 18.0)
 
         # 1. Vehicle Detection
         vehicle_detections = self.vehicle_detector.detect(frame)
@@ -113,7 +120,7 @@ class PipelineCoordinator:
                 raw_plate_text = simulated_plate
                 ocr_conf = 0.96
             elif plate_crop is not None and plate_crop.size > 0:
-                raw_plate_text, ocr_conf = self.run_ocr(plate_crop)
+                raw_plate_text, ocr_conf = self.run_ocr(plate_crop, is_night_mode=is_night_mode)
 
             if raw_plate_text:
                 self.temporal_ocr.add_observation(track_id, raw_plate_text, ocr_conf)
@@ -131,7 +138,8 @@ class PipelineCoordinator:
                     plate_number=stable_plate,
                     ocr_confidence=stable_conf,
                     observed_type=vehicle_type,
-                    observed_color=observed_color
+                    observed_color=observed_color,
+                    is_night_mode=is_night_mode
                 )
 
                 # Log event to database once per vehicle pass if confidence is reliable
@@ -191,7 +199,8 @@ class PipelineCoordinator:
                 "observed_color": observed_color,
                 "plate_number": stable_plate,
                 "ocr_confidence": stable_conf,
-                "risk_result": risk_result
+                "risk_result": risk_result,
+                "is_night_mode": is_night_mode
             }
             frame_telemetry.append(telemetry)
 

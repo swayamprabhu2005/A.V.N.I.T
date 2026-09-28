@@ -44,15 +44,21 @@ def evaluate_identity_risk(
     observed_type: str,
     observed_color: str,
     observed_make: Optional[str] = "",
-    observed_model: Optional[str] = ""
+    observed_model: Optional[str] = "",
+    is_night_mode: bool = False
 ) -> Dict[str, Any]:
     """
     Computes explainable 4-Factor Identity Risk Score.
-    Weights:
+    Standard Weights:
       - Type Match: 35%
       - Color Match: 20%
       - OCR Confidence: 20%
       - Make/Model Match: 25%
+    Adaptive Night Mode Weights (Monochrome IR lighting compensation):
+      - Type Match: 40%
+      - Color Match: 5% (Monochrome IR compensation)
+      - OCR Confidence: 35%
+      - Make/Model Match: 20%
     """
     vehicle_record = get_vehicle_by_plate(plate_number)
 
@@ -108,12 +114,17 @@ def evaluate_identity_risk(
         # If visual make/model is not detected by basic model, neutral credit is given
         score_make_model = 0.85
 
-    # Weighted Overall Similarity (0.0 to 1.0)
+    # Weighted Overall Similarity (0.0 to 1.0) with Adaptive Night Weighting
+    if is_night_mode:
+        w_type, w_color, w_ocr, w_model = 0.40, 0.05, 0.35, 0.20
+    else:
+        w_type, w_color, w_ocr, w_model = WEIGHT_VEHICLE_TYPE, WEIGHT_COLOR, WEIGHT_OCR_CONFIDENCE, WEIGHT_MAKE_MODEL
+
     similarity = (
-        (WEIGHT_VEHICLE_TYPE * score_type) +
-        (WEIGHT_COLOR * score_color) +
-        (WEIGHT_OCR_CONFIDENCE * score_ocr) +
-        (WEIGHT_MAKE_MODEL * score_make_model)
+        (w_type * score_type) +
+        (w_color * score_color) +
+        (w_ocr * score_ocr) +
+        (w_model * score_make_model)
     )
 
     # Risk Score = (1.0 - similarity) * 100 + status_penalty
@@ -122,10 +133,15 @@ def evaluate_identity_risk(
 
     # Risk Level & Granular Explanations
     reasons = []
+    if is_night_mode:
+        reasons.append("Auto Night Mode: Infrared glare suppression & adaptive low-light weighting active.")
     if not type_matched:
         reasons.append(f"Vehicle Type Mismatch: Observed '{observed_type.capitalize()}', but registered as '{reg_type.capitalize()}'.")
     if score_color < 0.5:
-        reasons.append(f"Color Mismatch: Observed '{observed_color.capitalize()}', but registered as '{reg_color.capitalize()}'.")
+        if is_night_mode:
+            reasons.append(f"Color Notice (Night Vision): Observed '{observed_color.capitalize()}', registered as '{reg_color.capitalize()}'.")
+        else:
+            reasons.append(f"Color Mismatch: Observed '{observed_color.capitalize()}', but registered as '{reg_color.capitalize()}'.")
     elif score_color < 1.0:
         reasons.append(f"Color Variance: Observed '{observed_color.capitalize()}', registered as '{reg_color.capitalize()}'.")
     
