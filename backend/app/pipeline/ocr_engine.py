@@ -145,7 +145,7 @@ class CustomPlateOCR:
                 import torch
                 from torchvision import models
                 import torch.nn as nn
-                checkpoint = torch.load(self.weight_path, map_location="cpu")
+                checkpoint = torch.load(self.weight_path, map_location="cpu", weights_only=False)
                 self.classes = checkpoint.get("classes", [])
                 model = models.resnet18(weights=None)
                 in_features = model.fc.in_features

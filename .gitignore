@@ -69,3 +69,8 @@ desktop.ini
 
 # Video Uploads & Generated Scenarios Cache
 backend/test_samples/*.tmp
+
+# Project Documents & Specifications
+*.docx
+AVNIT-AI Based Vehicle Number Plate and Identity Tampering Detection Project Details.docx
+

@@ -40,19 +40,20 @@ class VehicleColorClassifier:
         if os.path.exists(COLOR_CLASSIFIER_WEIGHTS):
             try:
                 print(f"[AVNIT] Loading Colab-trained Color Classifier from: {COLOR_CLASSIFIER_WEIGHTS}")
-                checkpoint = torch.load(COLOR_CLASSIFIER_WEIGHTS, map_location=self.device)
+                checkpoint = torch.load(COLOR_CLASSIFIER_WEIGHTS, map_location=self.device, weights_only=False)
                 
+                self.classes = checkpoint.get("classes", COLOR_CLASSES)
                 # Rebuild MobileNetV3-Small
                 model = models.mobilenet_v3_small(weights=None)
                 in_features = model.classifier[3].in_features
-                model.classifier[3] = nn.Linear(in_features, len(COLOR_CLASSES))
+                model.classifier[3] = nn.Linear(in_features, len(self.classes))
                 
                 state_dict = checkpoint.get("state_dict", checkpoint)
                 model.load_state_dict(state_dict)
                 model.eval()
                 self.model = model
                 self.is_custom_model_loaded = True
-                print("[AVNIT] Successfully loaded Colab Color Classifier model!")
+                print(f"[AVNIT] Successfully loaded Colab Color Classifier ({len(self.classes)} classes)!")
             except Exception as e:
                 print(f"[AVNIT] Warning: Could not load {COLOR_CLASSIFIER_WEIGHTS}: {e}. Using CV fallback.")
                 self.model = None
@@ -102,7 +103,18 @@ class VehicleColorClassifier:
                     logits = self.model(tensor)
                     probs = torch.softmax(logits, dim=1)[0]
                     conf, pred_idx = torch.max(probs, dim=0)
-                    predicted_color = COLOR_CLASSES[pred_idx.item()]
+                    classes_list = getattr(self, "classes", COLOR_CLASSES)
+                    raw_color = classes_list[pred_idx.item()]
+                    
+                    # Normalize classes to AVNIT standard palette
+                    color_mapping = {
+                        "grey": "silver_grey",
+                        "silver": "silver_grey",
+                        "beige": "white",
+                        "tan": "brown",
+                        "gold": "yellow"
+                    }
+                    predicted_color = color_mapping.get(raw_color.lower(), raw_color.lower())
                     return predicted_color, round(conf.item(), 2)
             except Exception as e:
                 print(f"[AVNIT] Error during neural color inference: {e}. Falling back to CV.")

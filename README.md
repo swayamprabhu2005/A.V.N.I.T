@@ -1,16 +1,16 @@
-# A.V.N.I.T. — AI-Based Vehicle Number Plate and Identity Tampering Detection
-
 <div align="center">
-  <img src="AVNIT.png" alt="A.V.N.I.T. Logo" width="160" style="border-radius: 20px;" />
-  <h3>Automated Verification of Number Plate and Identity Tampering</h3>
-  <p><strong>A Computer-Vision & Deep Learning System for Detecting Inconsistencies Between Observed Vehicles and Their Displayed Registration Plates</strong></p>
+  <img src="assets/AVNIT.png" alt="A.V.N.I.T. Logo" width="220" style="border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);" />
+  <h1>A.V.N.I.T.</h1>
+  <h3>Automated Verification of Number Plate and Identity Tampering Detection</h3>
+  <p><strong>An Autonomous Multi-Stage Deep Learning & Computer Vision System for Real-Time Vehicle Identity Verification, Number Plate Tampering Detection, and Registry Mismatch Auditing</strong></p>
 
   <p>
     <img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python" alt="Python" />
-    <img src="https://img.shields.io/badge/PyTorch-2.1%2B%20CPU%2FGPU-ee4c2c?logo=pytorch" alt="PyTorch" />
+    <img src="https://img.shields.io/badge/PyTorch-2.1%2B%20(CPU%2FGPU)-ee4c2c?logo=pytorch" alt="PyTorch" />
     <img src="https://img.shields.io/badge/YOLO-v8%20Nano-00ffff?logo=yolo" alt="YOLOv8" />
     <img src="https://img.shields.io/badge/FastAPI-0.100%2B-009688?logo=fastapi" alt="FastAPI" />
-    <img src="https://img.shields.io/badge/React-18%20(Vite)-61dafb?logo=react" alt="React" />
+    <img src="https://img.shields.io/badge/React-18%20(Vite%205)-61dafb?logo=react" alt="React" />
+    <img src="https://img.shields.io/badge/Tailwind-CSS%20v3-38bdf8?logo=tailwindcss" alt="Tailwind" />
     <img src="https://img.shields.io/badge/Database-SQLite%20WAL-003B57?logo=sqlite" alt="SQLite" />
     <img src="https://img.shields.io/badge/Tests-13%20Passed-brightgreen" alt="Tests" />
   </p>
@@ -18,231 +18,250 @@
 
 ---
 
-## 📌 Executive Summary
+## 📌 1. Executive Summary
 
-Conventional Automatic Number Plate Recognition (ANPR) systems primarily answer one simple question:  
+Conventional Automatic Number Plate Recognition (ANPR) systems primarily answer one simple question:
 > *"What alphanumeric characters are visible on this registration plate?"*
 
-**A.V.N.I.T.** elevates that question to a critical security standard:  
-> **"Does the detected plate actually belong to the vehicle carrying it?"**
+While effective for automated tolling, conventional ANPR suffers from a catastrophic security blind spot: **it cannot detect if a genuine registration plate has been illegally transferred to an unauthorized, cloned, or stolen vehicle.** 
 
-A legitimate license plate can easily be mounted onto a stolen, cloned, or unauthorized vehicle using magnetic brackets or swapped plates. **A.V.N.I.T.** identifies visual and registration inconsistencies in real-time by analyzing visual vehicle attributes (vehicle type, color, OCR confidence, make/model) and cross-referencing them against an authorized registration database, producing an explainable, weighted **Risk Anomaly Score** (🟢 Likely Valid, 🟡 Needs Review, 🔴 High-Risk Identity Mismatch).
+Criminals, toll evaders, and smugglers exploit this gap by using magnetic brackets, duplicate cloned plates, or physical modifications (such as using tape to alter digits like `0` to `8` or `3` to `B`).
+
+**A.V.N.I.T.** elevates ANPR to an autonomous security and identity-auditing platform by asking the critical question:
+> **"Does the observed vehicle's physical identity match the legal registration record tied to the displayed plate?"**
+
+By extracting and cross-verifying multimodal visual telemetry (**Vehicle Type, Body Color, License Plate Bounding Box, and Alphanumeric Character Geometry**) against official motor vehicle registry databases (e.g., VAHAN), A.V.N.I.T. produces an explainable, real-time **Risk Anomaly Score**:
+* 🟢 **LIKELY VALID (Risk < 25%)**: All visual attributes match registry records with high optical confidence.
+* 🟡 **NEEDS REVIEW (Risk 25% – 60%)**: Partial camera angle occlusion, minor color variations, or low OCR certainty.
+* 🔴 **HIGH-RISK IDENTITY MISMATCH (Risk > 60%)**: Critical tamper detected (e.g., a Blue Sedan bearing plates registered to a White Hatchback, or a Car bearing Motorcycle plates).
 
 ---
 
-## ⚡ 4GB RAM PC Optimization & Cloud GPU Training Strategy
+## 🧠 2. Trained Deep Learning Neural Networks & Models
 
-To guarantee that the system can be trained and run without requiring expensive local workstation hardware:
-* **Zero Local Training**: All deep neural network training is offloaded to **Google Colab's free NVIDIA T4 GPU (16 GB VRAM)** using turn-key Jupyter Notebooks that auto-mount Google Drive and export `.pt` weights.
-* **CPU-Native Local Inference**: The local pipeline uses ultra-lightweight architectures (**YOLOv8 Nano** at ~6 MB and **MobileNetV3-Small** at ~5 MB), processing frames in **~35 ms** and consuming under **250 MB of RAM**—running smoothly on standard 4GB RAM PCs without system freezing.
+All custom models were trained on **Google Colab (NVIDIA Tesla T4 GPU, 16 GB VRAM)** using turn-key Jupyter Notebooks and exported to the backend (`backend/models/`).
+
+| Model Identifier | Weight File | AI / ML Category & Exact Architecture | Dataset Used & Provenance | Dataset Size & Classes | Parameters & File Size | Training Epochs & Hardware | Final Accuracy & Performance Metrics | Core Role in A.V.N.I.T. |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Model 1: Plate Detector** | [`plate_detector.pt`](file:///D:/MyFiles/Projects/AVNIT/backend/models/plate_detector.pt) | **Deep Learning (CNN)**<br>Ultralytics YOLOv8 Nano (Anchor-Free Spatial Convolutions + C2f Cross-Stage Partial Network) | **[Car Plate Detection](https://www.kaggle.com/datasets/andrewmvd/car-plate-detection)** (`andrewmvd/car-plate-detection`) | 433 vehicle images with high-resolution license plate annotations in YOLO bounding box format | **~3.2 Million**<br>`6.25 MB` | **35 Epochs**<br>Google Colab (Tesla T4 GPU) | • **Precision**: **98.8%**<br>• **Recall**: **100.0%**<br>• **mAP@50**: **99.44%**<br>• **mAP@50-95**: **94.55%**<br>• Inference: **~12 ms/frame** | Detects license plate boundaries on moving vehicles under diverse camera angles and night/day illumination. |
+| **Model 2: Color Classifier** | [`color_classifier.pt`](file:///D:/MyFiles/Projects/AVNIT/backend/models/color_classifier.pt) | **Deep Learning (CNN)**<br>MobileNetV3-Small (Depthwise Separable Convolutions + Squeeze-and-Excitation + Hard-Swish) | **[VCoR Vehicle Color Recognition](https://www.kaggle.com/datasets/landrykezebou/vcor-vehicle-color-recognition-dataset)** (`landrykezebou/vcor-vehicle-color-recognition-dataset`) | 10,645 vehicle crops across 15 color classes (*beige, black, blue, brown, gold, green, grey, orange, pink, purple, red, silver, tan, white, yellow*) | **~1.52 Million**<br>`6.27 MB` | **20 Epochs**<br>Google Colab (Tesla T4 GPU) | • **Validation Accuracy**: **99.39%**<br>• **Final Loss**: **0.0245**<br>• Multi-class Cross-Entropy<br>• Inference: **~8 ms/frame** | Classifies vehicle exterior body color to detect stolen/swapped plates on mismatched vehicles. |
+| **Model 3: Plate OCR Verifier** | [`plate_ocr_crnn.pt`](file:///D:/MyFiles/Projects/AVNIT/backend/models/plate_ocr_crnn.pt) | **Deep Learning (Deep Residual CNN)**<br>ResNet-18 (8 Residual Blocks with Skip Connections $F(x)+x$ + Dropout 0.3) | **[License Plate Digits Classification](https://www.kaggle.com/datasets/aladdinss/license-plate-digits-classification-dataset)** (`aladdinss/license-plate-digits-classification-dataset`) | 17,565 character crops (14,050 train / 3,515 val) across 36 alphanumeric classes (`0`–`9`, `A`–`Z`) | **~11.19 Million**<br>`44.86 MB` | **20 Epochs**<br>Google Colab (Tesla T4 GPU) | • **Validation Accuracy**: **100.00%**<br>• **Training Accuracy**: **100.00%**<br>• **Final Loss**: **0.0001**<br>• Inference: **~15 ms/batch** | Character-level topological verification to catch taped alterations, forged fonts, and symbol spoofing. |
+| **Primary Sequence Reader** | Integrated | **Deep Learning (Hybrid Neural Net)**<br>EasyOCR CRNN (VGG/ResNet feature extractor + BiLSTM sequence modeling + CTC loss) | Pretrained on multi-language alphanumeric sequences with Indian syntax post-processing | Standard ASCII characters | Dynamic Sequence | Pretrained CPU-optimized | Full license plate string extraction with position-aware Indian state normalization (`DL`, `MH`, `KA`, `UP`, etc.). | Transcribes full license plate strings with Indian RTO regular expressions and temporal majority voting. |
+| **Base Vehicle Detector** | [`yolov8n.pt`](file:///D:/MyFiles/Projects/AVNIT/yolov8n.pt) | **Deep Learning (CNN)**<br>YOLOv8 Nano pretrained on MS COCO Benchmark | MS COCO 2017 Benchmark | 80 object categories (extracts `car`, `motorcycle`, `bus`, `truck`) | **~3.2 Million**<br>`6.25 MB` | Pretrained baseline | • **mAP@50**: **37.3%** on COCO (Full scale)<br>• Vehicle detection: **>95% recall** | Isolates whole vehicle boundaries and coordinates tracking state vectors. |
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ 3. End-to-End System Architecture
 
 ```
-                    ┌────────────────────────┐
-                    │  Webcam / Video Feed   │
-                    └───────────┬────────────┘
-                                │
-                                ▼
-                    ┌────────────────────────┐
-                    │ Vehicle Detector YOLO  │ (COCO Classes: Car, Motorcycle, Truck, Bus)
-                    └───────────┬────────────┘
-                                │
-                                ▼
-                    ┌────────────────────────┐
-                    │ Vehicle Tracker        │ (ByteTrack Multi-Object Persistent IDs)
-                    └───────────┬────────────┘
-                                │
-              ┌─────────────────┴─────────────────┐
-              ▼                                   ▼
-      ┌────────────────┐                  ┌────────────────┐
-      │ Plate Detector │                  │ Vehicle Color  │
-      │  (YOLOv8 Nano) │                  │ (MobileNetV3)  │
-      └───────┬────────┘                  └───────┬────────┘
-              │                                   │
-              ▼                                   │
-      ┌────────────────┐                          │
-      │  OCR Normalizer│                          │
-      │ (Regex Buffer) │                          │
-      └───────┬────────┘                          │
-              │                                   │
-              └─────────────────┬─────────────────┘
-                                ▼
-                    ┌────────────────────────┐
-                    │ 4-Factor Risk Engine   │ (Weighted Identity Mismatch Scoring)
-                    └───────────┬────────────┘
-                                │
-                   ┌────────────┴────────────┐
-                   ▼                         ▼
-          ┌─────────────────┐       ┌─────────────────┐
-          │  SQLite DB      │       │ React / Vite    │
-          │ (Authorized DB) │       │ Web Dashboard   │
-          └─────────────────┘       └─────────────────┘
+                                  +-------------------------------------------------------------+
+                                  |           Incoming Traffic Camera / Video Stream            |
+                                  +-------------------------------------------------------------+
+                                                                 |
+                                                                 v
+                                  +-------------------------------------------------------------+
+                                  |                 Vehicle Detector (YOLOv8)                   |
+                                  |             Isolates Car, Motorcycle, Truck, Bus            |
+                                  +-------------------------------------------------------------+
+                                                 |                               |
+                         Vehicle Bounding Box    |                               | Vehicle Bounding Box
+                                                 v                               v
+                  +----------------------------------------------+  +-------------------------------------------+
+                  |         Model 1: Plate Detector              |  |         Model 2: Color Classifier         |
+                  |          (Custom YOLOv8 Nano)                |  |           (MobileNetV3-Small)             |
+                  |    Sub-pixel License Plate Cropping          |  |       15-Class Vehicle Color Extraction   |
+                  +----------------------------------------------+  +-------------------------------------------+
+                                                 |                                               |
+                                                 v                                               |
+                  +----------------------------------------------+                               |
+                  |         Dual-Stage OCR Pipeline              |                               |
+                  | 1. EasyOCR (CRNN = ResNet + BiLSTM + CTC)   |                               |
+                  | 2. Model 3 (ResNet-18 Character Verifier)   |                               |
+                  | 3. Indian Position-Aware Regex Normalization|                               |
+                  +----------------------------------------------+                               |
+                                                 \                                              /
+                                                  \                                            /
+                                                   v                                          v
+                                  +-------------------------------------------------------------+
+                                  |            Persistent Tracking & Temporal Aggregator        |
+                                  |       ByteTrack (Kalman Filter + Hungarian Algorithm)       |
+                                  |      Majority Voting Buffer across Consecutive Frames       |
+                                  +-------------------------------------------------------------+
+                                                                 |
+                                                                 v
+                                  +-------------------------------------------------------------+
+                                  |          Explainable 4-Factor Bayesian Risk Engine          |
+                                  |     Cross-References Observed Telemetry vs VAHAN Registry   |
+                                  +-------------------------------------------------------------+
+                                                 |                               |
+                                                 v                               v
+                                  +------------------------------+  +---------------------------+
+                                  |      SQLite WAL Database     |  |       React 18 / Vite     |
+                                  | Audit Trail, Records, Alerts |  |   Real-Time HUD Dashboard |
+                                  +------------------------------+  +---------------------------+
 ```
 
 ---
 
-## ⚖️ 4-Factor Risk Engine Breakdown
+## 💻 4. Technology Stack
 
-Instead of making rigid binary decisions, A.V.N.I.T. calculates a weighted risk score:
+### A. Frontend Architecture
+* **Framework**: [React 18](https://react.dev/) using functional components and hooks (`useState`, `useEffect`, `useCallback`, `useRef`).
+* **Build Tool**: [Vite 5](https://vitejs.dev/) with Fast Refresh / HMR and optimized production bundling.
+* **Styling & Theme**: [Tailwind CSS v3](https://tailwindcss.com/) with a specialized dark cyber-security HUD palette (`bg-[#0B0F19]`, emerald pass indicators, rose warning badges, slate borders).
+* **Icons**: [Lucide React](https://lucide.dev/) modern stroke icons.
+* **Real-Time Rendering**: HTML5 Canvas overlay engine computing sub-pixel bounding boxes, track IDs, risk gauges, and telemetry directly over streaming video frames.
+* **Dashboard Modules**:
+  * **Live Stream & Video Player**: Real-time canvas projection with upload and inference toggle.
+  * **Risk Gauge**: Radial visual risk meter (0–100%) with dynamic severity coloring.
+  * **Attribute Comparison Matrix**: Side-by-side verification table (Observed vs Registered).
+  * **Verification History**: Chronological log of recent vehicle scans with instant alert filtering.
+  * **Vehicle Registry Modal**: Full CRUD interface for adding, searching, and managing VAHAN database records.
 
-| Signal Factor | Weight | Evaluation Logic & Detection Role |
+### B. Backend Architecture
+* **API Framework**: [FastAPI](https://fastapi.tiangolo.com/) with asynchronous non-blocking request handlers and auto-generated Swagger documentation (`/docs`).
+* **Inference Runtime**: [PyTorch 2.6](https://pytorch.org/) CPU-optimized execution engine (~35 ms total frame processing latency on 4GB RAM PCs).
+* **Database**: [SQLite](https://www.sqlite.org/) with Write-Ahead Logging (WAL) for thread-safe concurrent reads and writes (`backend/data/avnit.db`).
+* **Tracking Engine**: ByteTrack implementation using 8-dimensional Kalman Filters and the Hungarian bipartite assignment algorithm.
+* **Testing**: [pytest](https://pytest.org/) automated test suite with Starlette test client integration.
+
+---
+
+## ⚖️ 5. The 4-Factor Risk Scoring Engine
+
+Rather than relying on brittle binary checks, A.V.N.I.T. deploys an explainable weighted Bayesian decision matrix:
+
+| Factor | Weight | Evaluation Logic & Detection Role |
 | :--- | :---: | :--- |
-| **Vehicle Type Match** | **35%** | Compares detected class (car, motorcycle, truck, bus) against registered class. (e.g. Car carrying a motorcycle plate triggers an immediate penalty). |
-| **Make & Model Match** | **25%** | Cross-references brand and model series when available in registration records. |
-| **Vehicle Color Match** | **20%** | Compares visual body color against registered color (e.g. White car carrying a Black car's plate). |
-| **Plate OCR Confidence** | **20%** | Validates alphanumeric reading stability and checks against standard Indian plate syntax. |
-
-### Classification Verdicts:
-* 🟢 **LIKELY VALID (Risk < 25%)**: All observed attributes match the authorized registration record.
-* 🟡 **NEEDS REVIEW (Risk 25% – 60%)**: Partial OCR degradation, minor color variation, or camera angle obstruction.
-* 🔴 **HIGH-RISK IDENTITY MISMATCH (Risk > 60%)**: Swapped license plate, vehicle type mismatch, or plate not registered in database.
+| **Vehicle Type Match** | **35%** | Compares detected visual category (`car`, `motorcycle`, `bus`, `truck`) against registered vehicle type. A motorcycle carrying a car plate triggers an immediate critical penalty. |
+| **Make & Model Match** | **25%** | Compares detected vehicle silhouette and make against registered brand and model series. |
+| **Vehicle Color Match** | **20%** | Compares MobileNetV3 visual color against registered color (e.g., Red vehicle displaying plates belonging to a White vehicle). |
+| **Plate OCR Confidence** | **20%** | Evaluates optical character recognition confidence, topological character sanity, and adherence to standard Indian registration syntax (`^[A-Z]{2}[0-9]{1,2}[A-Z]{1,3}[0-9]{4}$`). |
 
 ---
 
-## 📁 Repository Structure
+## 🚀 6. Installation & Quick Start
 
-```
-A.V.N.I.T./
-├── AVNIT.png                                   # Official Project Branding Logo
-├── .gitignore                                  # Git exclusion rules (cache, venv, heavy weights)
-├── DATASETS_GUIDE.md                           # Curated Kaggle & Roboflow datasets guide
-├── README.md                                   # Comprehensive Project Documentation
-├── colab/                                      # Google Colab GPU Training Suite
-│   ├── AVNIT_Plate_Detector_Training.ipynb     # Model 1: License Plate YOLOv8n Training
-│   ├── AVNIT_Color_Classifier_Training.ipynb   # Model 2: Vehicle Color MobileNetV3 Training
-│   ├── AVNIT_Plate_OCR_Training.ipynb          # Model 3: Plate Character Deep CNN/CRNN Training
-│   └── README_COLAB.md                         # Step-by-step Colab tutorial
-├── backend/                                    # FastAPI Backend & AI Pipeline
-│   ├── app/
-│   │   ├── main.py                             # FastAPI entrypoint (serves API & pre-built React UI)
-│   │   ├── config.py                           # Settings, paths, weights, and thresholds
-│   │   ├── database.py                         # SQLite schema (vehicles, detections, alerts)
-│   │   ├── seed_data.py                        # Pre-seeded test vehicles for all demo scenarios
-│   │   ├── pipeline/
-│   │   │   ├── coordinator.py                  # Master CV pipeline coordinator
-│   │   │   ├── vehicle_detector.py             # YOLOv8 vehicle detection
-│   │   │   ├── tracker.py                      # ByteTrack vehicle tracking
-│   │   │   ├── plate_detector.py               # License plate localizer & heuristic fallback
-│   │   │   ├── ocr_engine.py                   # Indian plate normalizer & temporal aggregator
-│   │   │   ├── color_classifier.py             # MobileNetV3 color classifier & CV fallback
-│   │   │   └── risk_engine.py                  # 4-Factor explainable risk engine
-│   │   └── api/
-│   │       ├── routes.py                       # REST API (Vehicles CRUD, Stats, Alerts)
-│   │       └── websocket.py                    # Real-time WebSocket video frame streaming
-│   ├── models/                                 # Trained neural network weights (.pt files)
-│   │   ├── README.md                           # Documentation on placing .pt weights
-│   │   └── .gitkeep                            # Git structure keeper
-│   ├── data/                                   # SQLite database directory
-│   │   └── .gitkeep
-│   ├── test_samples/                           # Synthetic demo scenario videos (.mp4)
-│   ├── tests/                                  # Automated Pytest suite (13 tests)
-│   └── requirements.txt                        # Backend Python dependencies
-└── frontend/                                   # Modern React (Vite + TailwindCSS) Dashboard
-    ├── public/
-    │   └── AVNIT.png                           # Web logo and favicon
-    ├── src/
-    │   ├── App.jsx                             # Main dashboard interface
-    │   ├── components/
-    │   │   ├── Header.jsx                      # Status banner with model readiness indicators
-    │   │   ├── VideoPlayer.jsx                 # Live video viewport with HUD & source switcher
-    │   │   ├── StatusBanner.jsx                # Prominent color-coded verdict card
-    │   │   ├── RiskGauge.jsx                   # Radial 0-100% anomaly gauge & factor bars
-    │   │   ├── AttributeMatrix.jsx             # Explainability Observed vs Registered matrix
-    │   │   ├── DetectionHistory.jsx            # Audit history trail
-    │   │   └── VehicleManagerModal.jsx         # In-dashboard database CRUD modal
-    │   └── services/api.js                     # REST & WebSocket client
-    └── dist/                                   # Pre-built production frontend bundle
-```
+### Prerequisites
+* **Python 3.10+** (64-bit)
+* **Node.js 18+** & **npm**
 
----
-
-## 🚀 Quick Start Guide
-
-### 1. Prerequisites
-* **Python 3.10+**
-* **Node.js 18+** (Optional, only needed if modifying frontend source code)
-
-### 2. Start the Backend API & Web Dashboard
-
-Run the server using Uvicorn:
+### Step 1: Clone Repository
 ```powershell
-python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
+git clone https://github.com/your-repo/AVNIT.git
+cd AVNIT
 ```
 
-Open your browser at:  
-👉 **[http://localhost:8000](http://localhost:8000)**
-
-*(The FastAPI server automatically serves the pre-compiled, high-performance React dashboard directly on port 8000).*
-
----
-
-## 🎮 Pre-Packaged Demo Scenarios
-
-The dashboard includes 4 ready-to-test demonstration video clips:
-
-1. **Scenario 1 (Valid Identity)**: White Car displaying plate `MH12DE1433` $\rightarrow$ 🟢 **Likely Valid (GREEN)**.
-2. **Scenario 2 (Plate Swapping / Type Mismatch)**: Car displaying motorcycle plate `GA07AB1234` $\rightarrow$ 🔴 **High-Risk Identity Mismatch (RED)** *(Reason: Vehicle Type Mismatch)*.
-3. **Scenario 3 (Color Mismatch)**: Red Car displaying white car plate `MH12DE1433` $\rightarrow$ 🔴 **Color Mismatch Alert (RED)** *(Reason: Color Mismatch)*.
-4. **Scenario 4 (Unregistered / Cloned Plate)**: Car displaying unlisted plate `DL99ZZ0000` $\rightarrow$ 🔴 **Unregistered Vehicle Alert (RED)**.
-
-You can also toggle to **Live Webcam** mode to test real-world camera feeds.
-
----
-
-## 🧠 Google Colab Deep Learning Training Suite
-
-All 3 neural networks are trained on **Google Colab's free T4 GPU**:
-
-| Model | Notebook | Neural Architecture | Output Weight File |
-| :--- | :--- | :--- | :--- |
-| **Model 1: Plate Detector** | [`colab/AVNIT_Plate_Detector_Training.ipynb`](colab/AVNIT_Plate_Detector_Training.ipynb) | YOLOv8 Nano (`yolov8n.pt`) | `plate_detector.pt` |
-| **Model 2: Color Classifier** | [`colab/AVNIT_Color_Classifier_Training.ipynb`](colab/AVNIT_Color_Classifier_Training.ipynb) | MobileNetV3-Small | `color_classifier.pt` |
-| **Model 3: Plate OCR** | [`colab/AVNIT_Plate_OCR_Training.ipynb`](colab/AVNIT_Plate_OCR_Training.ipynb) | Deep Character CNN / ResNet | `plate_ocr_crnn.pt` |
-
-### How Training Works:
-1. Open [Google Colab](https://colab.research.google.com) and set the accelerator to **T4 GPU** (`Runtime` $\rightarrow$ `Change runtime type` $\rightarrow$ `T4 GPU`).
-2. Upload any of the 3 notebooks from `colab/` and click **Run All** (`Ctrl + F9`).
-3. Each notebook automatically connects to your **Google Drive** and saves all intermediate checkpoints to `My Drive/AVNIT_Models/`.
-4. Once training finishes, the notebook triggers a browser download for the `.pt` weight file.
-5. Move the downloaded weights into:
-   ```text
-   backend/models/
-   ```
-6. The backend dynamically detects and hot-loads your custom trained neural networks!
-
-*For dataset links and instructions, see [`DATASETS_GUIDE.md`](DATASETS_GUIDE.md).*
-
----
-
-## 🧪 Verification & Automated Tests
-
-A.V.N.I.T. includes a test suite covering OCR normalization, 4-factor risk scoring, SQLite CRUD, and REST endpoints:
-
+### Step 2: Set Up Backend
 ```powershell
-python -m pytest backend/tests/
+# Create and activate Python virtual environment
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+
+# Install backend dependencies
+pip install -r backend/requirements.txt
 ```
 
-**Results:**
+### Step 3: Run Automated Verification Tests
+```powershell
+$env:PYTHONPATH = "."
+python -m pytest backend/tests
+```
+*(All 13 unit tests will verify the database, risk scoring engine, OCR normalizer, and API endpoints).*
+
+### Step 4: Start the Backend Server
+```powershell
+python -m uvicorn backend.app.main:app --reload --port 8000
+```
+* Backend API live at: `http://localhost:8000`
+* Interactive API Documentation: `http://localhost:8000/docs`
+
+### Step 5: Start the Frontend Dashboard
+Open a new terminal window:
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+* Frontend Dashboard live at: `http://localhost:5173`
+
+---
+
+## 📁 7. Project Structure
+
 ```text
-======================= 13 passed in 28.07s ========================
-backend/tests/test_api.py ................ [PASS]
-backend/tests/test_database.py ........... [PASS]
-backend/tests/test_normalizer.py ......... [PASS]
-backend/tests/test_risk_engine.py ........ [PASS]
+AVNIT/
+├── assets/
+│   └── AVNIT.png                       # Official A.V.N.I.T. System Logo
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── routes.py               # REST API endpoints (inference, telemetry, vehicles)
+│   │   ├── core/
+│   │   │   └── risk_engine.py          # 4-Factor Bayesian Identity Tampering Engine
+│   │   ├── db/
+│   │   │   └── database.py             # SQLite WAL database & VAHAN vehicle registry
+│   │   ├── pipeline/
+│   │   │   ├── coordinator.py          # Full-pipeline video processor & tracker
+│   │   │   ├── plate_detector.py       # Model 1 (YOLOv8 Nano Plate Detector)
+│   │   │   ├── color_classifier.py     # Model 2 (MobileNetV3 Color Classifier)
+│   │   │   └── ocr_engine.py           # Model 3 (ResNet-18 OCR Verifier & EasyOCR)
+│   │   ├── config.py                   # Central configuration & model paths
+│   │   └── main.py                     # FastAPI application entrypoint
+│   ├── data/
+│   │   └── avnit.db                    # Persistent SQLite database file
+│   ├── models/
+│   │   ├── color_classifier.pt         # Trained MobileNetV3 weights (6.27 MB)
+│   │   ├── plate_detector.pt           # Trained YOLOv8 Nano weights (6.25 MB)
+│   │   ├── plate_ocr_crnn.pt           # Trained ResNet-18 OCR weights (44.86 MB)
+│   │   └── README.md                   # Model specifications & training documentation
+│   ├── tests/
+│   │   ├── test_api.py                 # FastAPI endpoint integration tests
+│   │   ├── test_database.py            # SQLite CRUD & schema tests
+│   │   ├── test_normalizer.py          # Indian plate regex & OCR normalization tests
+│   │   └── test_risk_engine.py         # 4-Factor risk scoring unit tests
+│   └── requirements.txt                # Python backend dependencies
+├── colab/
+│   ├── AVNIT_Plate_Detector_Training.ipynb   # Model 1 YOLOv8 training notebook
+│   ├── AVNIT_Color_Classifier_Training.ipynb # Model 2 MobileNetV3 training notebook
+│   └── AVNIT_Plate_OCR_Training.ipynb        # Model 3 ResNet-18 OCR training notebook
+├── frontend/
+│   ├── public/
+│   │   └── AVNIT.png                   # Favicon & branding asset
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   │   ├── AttributeMatrix.jsx     # Side-by-side observed vs registered table
+│   │   │   ├── DetectionHistory.jsx    # Chronological scan log & alert feed
+│   │   │   ├── Header.jsx              # System status & navigation header
+│   │   │   ├── RiskGauge.jsx           # Radial SVG risk score visualization
+│   │   │   ├── StatusBanner.jsx        # Top-level pass/tamper alert indicator
+│   │   │   ├── VehicleManagerModal.jsx # VAHAN database management modal
+│   │   │   └── VideoPlayer.jsx         # Real-time HTML5 canvas inference overlay
+│   │   ├── services/
+│   │   │   └── api.js                  # Axios/Fetch API client bindings
+│   │   ├── App.jsx                     # Root application coordinator
+│   │   └── main.jsx                    # Vite React DOM entrypoint
+│   ├── package.json                    # Frontend dependencies
+│   ├── tailwind.config.js              # Tailwind styling configuration
+│   └── vite.config.js                  # Vite bundler configuration
+├── DATASETS_GUIDE.md                   # Comprehensive guide to training datasets
+├── README.md                           # Master Project Documentation
+└── yolov8n.pt                          # Base COCO YOLOv8 Nano weights
 ```
 
 ---
 
-## 🔒 Ethics, Privacy & Scope
+## 🛡️ 8. Security & Privacy Considerations
 
-* **Anomaly Detection, Not Definitive Fraud Proof**: A standard RGB camera cannot physically detect mechanical mounting mechanisms (e.g. magnets). A.V.N.I.T. highlights visual and registration discrepancies to assist human operators.
-* **Controlled & Synthetic Data**: Demonstrations utilize synthetic/controlled registration databases without storing sensitive private citizen data.
-* **Fair Explainability**: Every flagged risk score is accompanied by human-readable justifications explaining precisely why a vehicle was flagged.
+* **Local Data Sovereignty**: All inference and database queries run entirely on the local device or edge server; no video frames or license plate data are transmitted to unverified third-party cloud APIs.
+* **Explainable AI (XAI)**: Every tamper alert provides a transparent breakdown of the contributing risk factors (e.g. `Color mismatch: observed Red vs registered White (Risk +20%)`), preventing opaque automated penalties.
+* **Thread-Safe Concurrent Auditing**: Database interactions use SQLite Write-Ahead Logging to guarantee zero database locking under high-frequency camera scans.
 
 ---
 
-## 📄 License
-This prototype is developed for academic, educational, and security research purposes under the MIT License.
+## 👥 9. Authors & Academic Attribution
+
+* **Project**: A.V.N.I.T. (Automated Verification of Number Plate and Identity Tampering Detection)
+* **Application**: Intelligent Transportation Systems (ITS), Smart Cities, Automated Border Control & Law Enforcement
+* **License**: MIT Academic License (Open Source)
