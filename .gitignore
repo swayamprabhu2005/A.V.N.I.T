@@ -29,15 +29,14 @@ backend/data/*.db-wal
 backend/data/*.db-shm
 *.sqlite3
 
-# Neural Network Weights & Checkpoints (Heavy Binaries)
-*.pt
+# Neural Network Checkpoints & Exported Formats
 *.pth
 *.onnx
 *.engine
-backend/models/*.pt
-backend/models/*.pth
-backend/models/*.onnx
-backend/models/*.engine
+
+# Whitelist trained PyTorch models (<50 MB) for direct repository tracking
+!backend/models/*.pt
+!yolov8n.pt
 !backend/models/README.md
 !backend/models/.gitkeep
 
@@ -70,7 +69,7 @@ desktop.ini
 # Video Uploads & Generated Scenarios Cache
 backend/test_samples/*.tmp
 
-# Project Documents & Specifications
+# Project Documents & Specifications (Ignored from repository)
 *.docx
 AVNIT-AI Based Vehicle Number Plate and Identity Tampering Detection Project Details.docx
-
+DATASETS_GUIDE.md

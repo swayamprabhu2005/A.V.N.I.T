@@ -284,8 +284,7 @@ AVNIT/
 │   ├── index.html                      # Executive light theme HTML5 template
 │   ├── package.json                    # Vue 3, PixiJS, Motion One, jsPDF dependencies
 │   ├── tailwind.config.js              # Custom zero-blue executive color palette
-│   └── vite.config.js                  # Vite 5 Vue bundler configuration
-├── DATASETS_GUIDE.md                   # Comprehensive guide to training datasets
+├── run.bat                             # Master one-click startup launcher
 ├── README.md                           # Master Project Documentation
 └── yolov8n.pt                          # Base COCO YOLOv8 Nano weights
 ```
