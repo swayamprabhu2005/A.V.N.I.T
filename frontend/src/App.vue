@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
+import HomePage from './views/HomePage.vue'
 import AppHeader from './components/AppHeader.vue'
 import VideoPlayer from './components/VideoPlayer.vue'
 import RiskGauge from './components/RiskGauge.vue'
@@ -12,6 +13,23 @@ import StatusBanner from './components/StatusBanner.vue'
 import { useCameraChannels } from './composables/useCameraChannels'
 import { useWebSocket } from './composables/useWebSocket'
 import { useExportReports } from './composables/useExportReports'
+import { getSavedOperator, signOutOperator } from './services/firebase'
+
+// Operator Authentication Session State
+const currentOperator = ref(getSavedOperator())
+
+const handleLoginSuccess = (user) => {
+  currentOperator.value = user
+  fetchAlerts()
+  fetchStats()
+  startStream(getSelectedChannel())
+}
+
+const handleSignOut = async () => {
+  stopStream()
+  await signOutOperator()
+  currentOperator.value = null
+}
 
 // Composables
 const { channels, selectedChannelId, getSelectedChannel, addRTSPChannel } = useCameraChannels()
@@ -139,15 +157,23 @@ watch(
 )
 
 onMounted(() => {
-  fetchAlerts()
-  fetchStats()
-  // Start stream on initial channel
-  startStream(getSelectedChannel())
+  if (currentOperator.value) {
+    fetchAlerts()
+    fetchStats()
+    startStream(getSelectedChannel())
+  }
 })
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#f8f9fa] text-zinc-900 flex flex-col font-sans selection:bg-zinc-200">
+  <!-- 1. Home & Authentication Portal (Shown if not signed in) -->
+  <HomePage
+    v-if="!currentOperator"
+    @login-success="handleLoginSuccess"
+  />
+
+  <!-- 2. Live Command Center Dashboard (Shown once authenticated) -->
+  <div v-else class="min-h-screen bg-gradient-to-br from-[#faf7f2] via-[#f1ebe0] to-[#e4ded0] text-stone-900 flex flex-col font-sans selection:bg-amber-100 selection:text-amber-900">
     
     <!-- Top Executive Header -->
     <AppHeader
@@ -155,14 +181,16 @@ onMounted(() => {
       :selected-channel-id="selectedChannelId"
       :is-streaming="isStreaming"
       :fps="fps"
+      :operator="currentOperator"
       @select-channel="handleSelectChannel"
       @open-camera-modal="isCameraModalOpen = true"
       @open-vahan-modal="isVahanModalOpen = true"
       @export-csv="exportToCSV(alertsList)"
       @export-pdf="exportToPDF(alertsList, stats)"
+      @sign-out="handleSignOut"
     />
 
-    <!-- Main Content Container -->
+    <!-- Main Content Container with Warm Ambient Gradients (Zero Blue) -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
       <!-- Dynamic High-Risk Status Banner -->
@@ -211,7 +239,7 @@ onMounted(() => {
             :is-night-mode="isNightMode"
           />
 
-          <!-- Side-by-Side Visual Attribute Cross-Verification Matrix -->
+          <!-- Side-by-Side Visual Attribute Cross-Verification Matrix & Snapshot Evidence -->
           <AttributeMatrix
             :telemetry="telemetry?.[0]"
             :risk-result="activeRisk"

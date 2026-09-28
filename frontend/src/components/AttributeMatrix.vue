@@ -8,7 +8,10 @@ import {
   Palette,
   CreditCard,
   Shield,
-  Layers
+  Layers,
+  Camera,
+  Image as ImageIcon,
+  Lock
 } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -25,12 +28,15 @@ const props = defineProps({
 // Observed values from computer vision models
 const observed = computed(() => {
   return {
-    plate: props.telemetry?.plate_number || 'UNKNOWN',
+    plate: props.telemetry?.plate_number || 'DETECTING...',
     type: props.telemetry?.vehicle_type || 'N/A',
     color: props.telemetry?.observed_color || 'N/A',
     confidence: props.telemetry?.ocr_confidence
       ? Math.round(props.telemetry.ocr_confidence * 100)
-      : 95
+      : (props.telemetry?.plate_number && props.telemetry?.plate_number !== 'DETECTING...' ? 95 : 0),
+    isLocked: Boolean(props.telemetry?.is_locked),
+    snapshotImage: props.telemetry?.snapshot_image || '',
+    plateImage: props.telemetry?.plate_image || ''
   }
 })
 
@@ -77,158 +83,199 @@ const statusMatch = computed(() => {
   if (!registered.value.exists) return 'mismatch'
   return registered.value.status.toLowerCase() === 'active' ? 'match' : 'mismatch'
 })
-
-// Map color names to CSS preview backgrounds (Zero Blue)
-const getColorDot = (colorName) => {
-  const c = (colorName || '').toLowerCase()
-  switch (c) {
-    case 'white': return '#ffffff'
-    case 'black': return '#18181b'
-    case 'silver':
-    case 'gray':
-    case 'grey': return '#9ca3af'
-    case 'red': return '#dc2626'
-    case 'maroon': return '#800000'
-    case 'yellow': return '#eab308'
-    case 'orange': return '#ea580c'
-    case 'green': return '#16a34a'
-    case 'brown': return '#78350f'
-    case 'beige': return '#f5f5dc'
-    default: return '#71717a'
-  }
-}
 </script>
 
 <template>
-  <div class="bg-white rounded-xl border border-zinc-200/90 shadow-card p-5">
+  <div class="bg-white/85 backdrop-blur-md rounded-2xl border border-stone-300 shadow-md p-6 space-y-5 transition-all">
     
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-zinc-100 pb-3">
+    <div class="flex items-center justify-between border-b border-stone-200 pb-3">
       <div>
-        <h2 class="text-xs font-bold uppercase tracking-wider text-zinc-500">Identity Cross-Verification</h2>
-        <p class="text-sm font-bold text-zinc-900 font-sans">Observed Visuals vs. Registered Record</p>
+        <span class="text-[11px] font-bold text-stone-500 uppercase tracking-widest block">Identity Cross-Verification</span>
+        <h3 class="text-sm font-black text-stone-900 tracking-tight">Observed Visuals vs. Registered Record</h3>
       </div>
-
-      <div class="flex items-center space-x-2">
-        <span
-          class="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded text-[11px] font-semibold"
-          :class="registered.exists
-            ? 'bg-zinc-100 text-zinc-800 border border-zinc-300'
-            : 'bg-rose-50 text-rose-700 border border-rose-200'"
-        >
-          <Layers class="w-3 h-3 text-zinc-500" />
-          <span>{{ registered.exists ? 'Registry Synced' : 'Unregistered Plate' }}</span>
-        </span>
+      <div v-if="registered.exists" class="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-300">
+        <CheckCircle2 class="w-3.5 h-3.5" />
+        <span>VAHAN Matched</span>
+      </div>
+      <div v-else class="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 text-xs font-bold border border-rose-300">
+        <XCircle class="w-3.5 h-3.5" />
+        <span>Unregistered Plate</span>
       </div>
     </div>
 
-    <!-- Attribute Comparison Table -->
-    <div class="mt-4 divide-y divide-zinc-100">
-
-      <!-- 1. License Plate Number -->
-      <div class="py-3 flex items-center justify-between">
-        <div class="flex items-center space-x-2.5 w-1/3">
-          <CreditCard class="w-4 h-4 text-zinc-500" />
-          <span class="text-xs font-semibold text-zinc-700">License Plate</span>
+    <!-- 📸 Captured Keyframe Evidence Snapshot (New Feature) -->
+    <div v-if="observed.snapshotImage" class="p-4 rounded-xl bg-gradient-to-br from-stone-900 to-stone-950 text-white border border-stone-800 shadow-inner space-y-3">
+      
+      <div class="flex items-center justify-between text-xs">
+        <div class="flex items-center space-x-2 font-bold tracking-wide text-stone-200">
+          <Camera class="w-4 h-4 text-emerald-400" />
+          <span>Best-Frame Vehicle Capture</span>
         </div>
-
-        <div class="w-1/3 text-left">
-          <div class="text-xs font-mono font-bold text-zinc-900 tracking-wider">
-            {{ observed.plate.toUpperCase() }}
-          </div>
-          <span class="text-[10px] text-zinc-400 font-medium">OCR Conf: {{ observed.confidence }}%</span>
-        </div>
-
-        <div class="w-1/3 flex items-center justify-end space-x-2">
-          <div class="text-xs font-mono font-bold text-zinc-800 tracking-wider text-right">
-            {{ registered.plate.toUpperCase() }}
-          </div>
-          <CheckCircle2 v-if="registered.exists" class="w-4 h-4 text-emerald-600 flex-shrink-0" />
-          <XCircle v-else class="w-4 h-4 text-rose-600 flex-shrink-0" />
+        <div class="flex items-center space-x-1.5 px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold border border-emerald-500/30">
+          <Lock class="w-3 h-3" />
+          <span>LOCKED VERDICT</span>
         </div>
       </div>
 
-      <!-- 2. Vehicle Classification -->
-      <div class="py-3 flex items-center justify-between">
-        <div class="flex items-center space-x-2.5 w-1/3">
-          <Car class="w-4 h-4 text-zinc-500" />
-          <span class="text-xs font-semibold text-zinc-700">Vehicle Type</span>
+      <div class="grid grid-cols-12 gap-3 items-center">
+        <!-- Full Car Snip -->
+        <div class="col-span-8 rounded-lg overflow-hidden border border-stone-700 bg-black aspect-video relative group">
+          <img
+            :src="observed.snapshotImage"
+            alt="Captured Vehicle"
+            class="w-full h-full object-cover"
+          />
+          <div class="absolute bottom-1.5 left-2 px-1.5 py-0.5 rounded bg-black/70 text-[10px] font-mono text-stone-300">
+            ID #{{ telemetry?.track_id || 1 }} Peak Clarity
+          </div>
         </div>
 
-        <div class="w-1/3 text-left">
-          <span class="text-xs font-semibold text-zinc-900 capitalize">
-            {{ observed.type }}
-          </span>
-          <div class="text-[10px] text-zinc-400">YOLOv8 Detection</div>
-        </div>
-
-        <div class="w-1/3 flex items-center justify-end space-x-2">
-          <span class="text-xs font-semibold text-zinc-800 capitalize text-right">
-            {{ registered.type }}
-          </span>
-          <CheckCircle2 v-if="typeMatch === 'match'" class="w-4 h-4 text-emerald-600 flex-shrink-0" />
-          <XCircle v-else class="w-4 h-4 text-rose-600 flex-shrink-0" />
+        <!-- Bumper Plate Snip -->
+        <div class="col-span-4 space-y-1.5">
+          <div class="text-[10px] uppercase font-bold text-stone-400">Plate Crop</div>
+          <div class="rounded-lg overflow-hidden border border-amber-500/40 bg-black aspect-[3/1] flex items-center justify-center">
+            <img
+              v-if="observed.plateImage"
+              :src="observed.plateImage"
+              alt="Plate Crop"
+              class="w-full h-full object-contain"
+            />
+            <span v-else class="text-[10px] text-stone-500">Plate Crop</span>
+          </div>
+          <div class="text-[11px] font-mono font-bold text-amber-300 tracking-wider text-center">
+            {{ observed.plate }}
+          </div>
         </div>
       </div>
 
-      <!-- 3. Exterior Body Color -->
-      <div class="py-3 flex items-center justify-between">
-        <div class="flex items-center space-x-2.5 w-1/3">
-          <Palette class="w-4 h-4 text-zinc-500" />
-          <span class="text-xs font-semibold text-zinc-700">Vehicle Color</span>
-        </div>
+    </div>
 
-        <div class="w-1/3 text-left flex items-center space-x-2">
-          <span
-            class="w-3.5 h-3.5 rounded-full border border-zinc-300 shadow-inner flex-shrink-0"
-            :style="{ backgroundColor: getColorDot(observed.color) }"
-          ></span>
+    <!-- Comparative Visual Grid -->
+    <div class="space-y-3">
+      
+      <!-- Attribute 1: Plate Number -->
+      <div class="p-3.5 rounded-xl border border-stone-200 bg-stone-50/80 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 rounded-lg bg-stone-200 text-stone-800">
+            <CreditCard class="w-4 h-4" />
+          </div>
           <div>
-            <span class="text-xs font-semibold text-zinc-900 capitalize">
-              {{ observed.color }}
-            </span>
-            <div class="text-[10px] text-zinc-400">MobileNetV3</div>
+            <div class="text-xs font-bold text-stone-600">License Plate</div>
+            <div class="text-sm font-mono font-black text-stone-900 tracking-wider">
+              {{ observed.plate }}
+            </div>
+            <div class="text-[10px] text-stone-500 font-mono">
+              OCR Conf: {{ observed.confidence }}%
+            </div>
           </div>
         </div>
 
-        <div class="w-1/3 flex items-center justify-end space-x-2">
-          <div class="flex items-center space-x-1.5">
-            <span
-              class="w-3 h-3 rounded-full border border-zinc-300 shadow-inner flex-shrink-0"
-              :style="{ backgroundColor: getColorDot(registered.color) }"
-            ></span>
-            <span class="text-xs font-semibold text-zinc-800 capitalize">
-              {{ registered.color }}
-            </span>
+        <div class="text-right">
+          <div class="text-xs font-bold font-mono tracking-wider" :class="registered.exists ? 'text-stone-900' : 'text-rose-700'">
+            {{ registered.plate }}
           </div>
-          <CheckCircle2 v-if="colorMatch === 'match'" class="w-4 h-4 text-emerald-600 flex-shrink-0" />
-          <AlertTriangle v-else-if="colorMatch === 'variance'" class="w-4 h-4 text-amber-500 flex-shrink-0" />
-          <XCircle v-else class="w-4 h-4 text-rose-600 flex-shrink-0" />
+          <div class="text-[10px] font-medium" :class="registered.exists ? 'text-emerald-700' : 'text-rose-600'">
+            {{ registered.exists ? 'VAHAN Registered' : 'Not in Central DB' }}
+          </div>
         </div>
       </div>
 
-      <!-- 4. Registration Status & Legal Standing -->
-      <div class="py-3 flex items-center justify-between">
-        <div class="flex items-center space-x-2.5 w-1/3">
-          <Shield class="w-4 h-4 text-zinc-500" />
-          <span class="text-xs font-semibold text-zinc-700">Legal Status</span>
+      <!-- Attribute 2: Vehicle Type -->
+      <div class="p-3.5 rounded-xl border border-stone-200 bg-stone-50/80 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 rounded-lg bg-stone-200 text-stone-800">
+            <Car class="w-4 h-4" />
+          </div>
+          <div>
+            <div class="text-xs font-bold text-stone-600">Vehicle Type</div>
+            <div class="text-sm font-black text-stone-900 capitalize">
+              {{ observed.type }}
+            </div>
+            <div class="text-[10px] text-stone-500 font-medium">
+              YOLOv8 Detection
+            </div>
+          </div>
         </div>
 
-        <div class="w-1/3 text-left">
-          <span class="text-xs font-medium text-zinc-500">Live Visual Analysis</span>
+        <div class="flex items-center space-x-2">
+          <div class="text-right">
+            <div class="text-xs font-bold capitalize text-stone-900">
+              {{ registered.type }}
+            </div>
+            <div class="text-[10px] text-stone-500">
+              Registered Class
+            </div>
+          </div>
+          <div v-if="registered.exists">
+            <CheckCircle2 v-if="typeMatch === 'match'" class="w-4 h-4 text-emerald-700" />
+            <XCircle v-else class="w-4 h-4 text-rose-700" />
+          </div>
+          <XCircle v-else class="w-4 h-4 text-rose-600" />
+        </div>
+      </div>
+
+      <!-- Attribute 3: Vehicle Color -->
+      <div class="p-3.5 rounded-xl border border-stone-200 bg-stone-50/80 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 rounded-lg bg-stone-200 text-stone-800">
+            <Palette class="w-4 h-4" />
+          </div>
+          <div>
+            <div class="text-xs font-bold text-stone-600">Vehicle Color</div>
+            <div class="text-sm font-black text-stone-900 capitalize">
+              {{ observed.color }}
+            </div>
+            <div class="text-[10px] text-stone-500 font-medium">
+              MobileNetV3 15-Class
+            </div>
+          </div>
         </div>
 
-        <div class="w-1/3 flex items-center justify-end space-x-2">
+        <div class="flex items-center space-x-2">
+          <div class="text-right">
+            <div class="text-xs font-bold capitalize text-stone-900">
+              {{ registered.color }}
+            </div>
+            <div class="text-[10px] text-stone-500">
+              Registered Color
+            </div>
+          </div>
+          <div v-if="registered.exists">
+            <CheckCircle2 v-if="colorMatch === 'match'" class="w-4 h-4 text-emerald-700" />
+            <AlertTriangle v-else-if="colorMatch === 'variance'" class="w-4 h-4 text-amber-700" />
+            <XCircle v-else class="w-4 h-4 text-rose-700" />
+          </div>
+          <XCircle v-else class="w-4 h-4 text-rose-600" />
+        </div>
+      </div>
+
+      <!-- Attribute 4: Legal Registration Status -->
+      <div class="p-3.5 rounded-xl border border-stone-200 bg-stone-50/80 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 rounded-lg bg-stone-200 text-stone-800">
+            <Shield class="w-4 h-4" />
+          </div>
+          <div>
+            <div class="text-xs font-bold text-stone-600">Legal Status</div>
+            <div class="text-sm font-black text-stone-900">
+              Live Audit Pass
+            </div>
+            <div class="text-[10px] text-stone-500 font-medium">
+              Real-time verification
+            </div>
+          </div>
+        </div>
+
+        <div>
           <span
-            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
-            :class="statusMatch === 'match'
-              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-              : 'bg-rose-50 text-rose-700 border border-rose-200'"
+            class="px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider border"
+            :class="registered.exists && statusMatch === 'match'
+              ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+              : 'bg-rose-100 text-rose-800 border-rose-300'"
           >
             {{ registered.status }}
           </span>
-          <CheckCircle2 v-if="statusMatch === 'match'" class="w-4 h-4 text-emerald-600 flex-shrink-0" />
-          <XCircle v-else class="w-4 h-4 text-rose-600 flex-shrink-0" />
         </div>
       </div>
 

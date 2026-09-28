@@ -4,26 +4,30 @@
 
 @layer base {
   body {
-    @apply bg-[#f8f9fa] text-zinc-900 font-sans antialiased;
+    @apply text-stone-900 font-sans antialiased;
+    background: radial-gradient(circle at 10% 15%, rgba(217, 119, 6, 0.04) 0%, transparent 45%),
+                radial-gradient(circle at 90% 85%, rgba(5, 150, 105, 0.04) 0%, transparent 45%),
+                linear-gradient(135deg, #faf7f2 0%, #f2ece0 50%, #e5dfd2 100%);
+    background-attachment: fixed;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
-/* Custom Sleek Scrollbar (Zero Blue) */
+/* Custom Sleek Scrollbar (Zero Blue Stone/Amber) */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f4f4f5;
+  background: #f1ede4;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d4d4d8;
+  background: #d6cfc2;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1aa;
+  background: #b8af9f;
 }

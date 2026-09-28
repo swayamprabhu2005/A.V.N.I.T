@@ -91,7 +91,7 @@ async def websocket_stream_endpoint(websocket: WebSocket):
                 ret, frame = cap.read()
                 if not ret:
                     # If video file ended, loop back to start
-                    if source_type == "scenario":
+                    if source_type in ["scenario", "custom"]:
                         cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
                         ret, frame = cap.read()
                     else:
