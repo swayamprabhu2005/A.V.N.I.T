@@ -1,7 +1,7 @@
 {
   "name": "avnit-dashboard",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,16 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "lucide-react": "^0.395.0",
+    "@motionone/vue": "^10.16.2",
     "clsx": "^2.1.1",
-    "tailwind-merge": "^2.3.0"
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
+    "lucide-vue-next": "^0.395.0",
+    "pixi.js": "^7.4.2",
+    "tailwind-merge": "^2.3.0",
+    "vue": "^3.4.31"
   },
   "devDependencies": {
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-vue": "^5.0.5",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
