@@ -21,34 +21,33 @@
 
 ## 📌 1. Executive Summary
 
-Conventional Automatic Number Plate Recognition (ANPR) systems primarily answer one simple question:
-> *"What alphanumeric characters are visible on this registration plate?"*
+Standard Automatic Number Plate Recognition (ANPR) systems suffer from a critical security vulnerability: **they only transcribe characters, completely blind to whether a plate has been illegally cloned or attached to a stolen vehicle.**
 
-While effective for automated tolling, conventional ANPR suffers from a catastrophic security blind spot: **it cannot detect if a genuine registration plate has been illegally transferred to an unauthorized, cloned, or stolen vehicle.** 
+> **The Core Problem**: Conventional ANPR only reads characters; it cannot detect if a genuine registration plate has been cloned, forged, or transferred to an unauthorized vehicle.
+>
+> **The A.V.N.I.T. Solution**: Transforms ANPR into an autonomous **Identity Cross-Verification Platform**. It extracts multimodal visual intelligence (**Vehicle Type, Exterior Color, Plate Geometry, and Character Topology**) and cross-references it against official motor vehicle registry databases (e.g., VAHAN) in real time to detect fraud instantly.
 
-Criminals, toll evaders, and vehicle smugglers exploit this gap using magnetic brackets, duplicate cloned plates, or physical modifications (such as using black tape to alter characters like `0` to `8` or `3` to `B`).
+### Real-Time Anomaly Scoring Matrix
 
-**A.V.N.I.T.** elevates ANPR to an autonomous security and identity-auditing platform by asking the critical question:
-> **"Does the observed vehicle's physical identity match the legal registration record tied to the displayed plate?"**
-
-By extracting and cross-verifying multimodal visual telemetry (**Vehicle Type, Body Color, License Plate Bounding Box, and Alphanumeric Character Geometry**) against official motor vehicle registry databases (e.g., VAHAN), A.V.N.I.T. produces an explainable, real-time **Risk Anomaly Score**:
-* 🟢 **VERIFIED PASS (Risk < 30%)**: All visual attributes match registry records with high optical confidence.
-* 🟡 **ATTRIBUTE VARIANCE REVIEW (Risk 30% – 59%)**: Minor color variations, partial camera occlusions, or lighting variance.
-* 🔴 **CRITICAL IDENTITY TAMPERING (Risk >= 60%)**: Critical tamper detected (e.g., a Black SUV bearing plates registered to a White Hatchback, or a Car displaying Motorcycle plates).
+| Verdict Level | Risk Score | Operational Trigger | Visual Status |
+| :--- | :---: | :--- | :---: |
+| **Verified Pass** | `< 30%` | Visual attributes (type, color, plate) match registry records with high optical confidence | 🟢 **PASS** |
+| **Variance Review** | `30% – 59%` | Minor color shifts, low-light/weather variance, or partial camera angle occlusions | 🟡 **REVIEW** |
+| **Critical Tampering** | `>= 60%` | Severe identity mismatch (e.g., cloned plates on wrong vehicle type or color) | 🔴 **ALERT** |
 
 ---
 
 ## 🧠 2. Trained Deep Learning Neural Networks & Models
 
-All custom models were trained on **Google Colab (NVIDIA Tesla T4 GPU, 16 GB VRAM)** using turn-key Jupyter Notebooks and exported directly to the backend runtime (`backend/models/`).
+All custom models were trained on **Google Colab (NVIDIA Tesla T4 GPU, 16 GB VRAM)** using turn-key Jupyter Notebooks and exported directly to `backend/models/`.
 
-| Model Identifier | Weight File | AI / ML Category & Exact Architecture | Dataset Used & Provenance | Dataset Size & Classes | Parameters & File Size | Training Epochs & Hardware | Final Accuracy & Performance Metrics | Core Role in A.V.N.I.T. |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Model 1: Plate Detector** | [`plate_detector.pt`](file:///D:/MyFiles/Projects/AVNIT/backend/models/plate_detector.pt) | **Deep Learning (CNN)**<br>Ultralytics YOLOv8 Nano (Anchor-Free Spatial Convolutions + C2f Cross-Stage Partial Network) | **[Car Plate Detection](https://www.kaggle.com/datasets/andrewmvd/car-plate-detection)** (`andrewmvd/car-plate-detection`) | 433 vehicle images with high-resolution license plate annotations in YOLO bounding box format | **~3.2 Million**<br>`6.25 MB` | **35 Epochs**<br>Google Colab (Tesla T4 GPU) | • **Precision**: **98.8%**<br>• **Recall**: **100.0%**<br>• **mAP@50**: **99.44%**<br>• **mAP@50-95**: **94.55%**<br>• Inference: **~12 ms/frame** | Detects license plate boundaries on moving vehicles under diverse camera angles and night/day illumination. |
-| **Model 2: Color Classifier** | [`color_classifier.pt`](file:///D:/MyFiles/Projects/AVNIT/backend/models/color_classifier.pt) | **Deep Learning (CNN)**<br>MobileNetV3-Small (Depthwise Separable Convolutions + Squeeze-and-Excitation + Hard-Swish) | **[VCoR Vehicle Color Recognition](https://www.kaggle.com/datasets/landrykezebou/vcor-vehicle-color-recognition-dataset)** (`landrykezebou/vcor-vehicle-color-recognition-dataset`) | 10,645 vehicle crops across 15 color classes (*beige, black, blue, brown, gold, green, grey, orange, pink, purple, red, silver, tan, white, yellow*) | **~1.52 Million**<br>`6.27 MB` | **20 Epochs**<br>Google Colab (Tesla T4 GPU) | • **Validation Accuracy**: **99.39%**<br>• **Final Loss**: **0.0245**<br>• Multi-class Cross-Entropy<br>• Inference: **~8 ms/frame** | Classifies vehicle exterior body color to detect stolen/swapped plates on mismatched vehicles. |
-| **Model 3: Plate OCR Verifier** | [`plate_ocr_crnn.pt`](file:///D:/MyFiles/Projects/AVNIT/backend/models/plate_ocr_crnn.pt) | **Deep Learning (Deep Residual CNN)**<br>ResNet-18 (8 Residual Blocks with Skip Connections $F(x)+x$ + Dropout 0.3) | **[License Plate Digits Classification](https://www.kaggle.com/datasets/aladdinss/license-plate-digits-classification-dataset)** (`aladdinss/license-plate-digits-classification-dataset`) | 17,565 character crops (14,050 train / 3,515 val) across 36 alphanumeric classes (`0`–`9`, `A`–`Z`) | **~11.19 Million**<br>`44.86 MB` | **20 Epochs**<br>Google Colab (Tesla T4 GPU) | • **Validation Accuracy**: **100.00%**<br>• **Training Accuracy**: **100.00%**<br>• **Final Loss**: **0.0001**<br>• Inference: **~15 ms/batch** | Character-level topological verification to catch taped alterations, forged fonts, and symbol spoofing. |
-| **Primary Sequence Reader** | Integrated | **Deep Learning (Hybrid Neural Net)**<br>EasyOCR CRNN (VGG/ResNet feature extractor + BiLSTM sequence modeling + CTC loss) | Pretrained on multi-language alphanumeric sequences with Indian syntax post-processing | Standard ASCII characters | Dynamic Sequence | Pretrained CPU-optimized | Full license plate string extraction with position-aware Indian state normalization (`DL`, `MH`, `KA`, `UP`, etc.). | Transcribes full license plate strings with Indian RTO regular expressions and temporal majority voting. |
-| **Base Vehicle Detector** | [`yolov8n.pt`](file:///D:/MyFiles/Projects/AVNIT/yolov8n.pt) | **Deep Learning (CNN)**<br>YOLOv8 Nano pretrained on MS COCO Benchmark | MS COCO 2017 Benchmark | 80 object categories (extracts `car`, `motorcycle`, `bus`, `truck`) | **~3.2 Million**<br>`6.25 MB` | Pretrained baseline | • **mAP@50**: **37.3%** on COCO (Full scale)<br>• Vehicle detection: **>95% recall** | Isolates whole vehicle boundaries and coordinates tracking state vectors. |
+| Model & Weights | AI Architecture & Type | Dataset Provenance | Benchmark Accuracy | Footprint | Primary Role |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Plate Detector**<br>[`plate_detector.pt`](backend/models/plate_detector.pt) | **Deep Learning (CNN)**<br>Ultralytics YOLOv8 Nano | [Car Plate Detection](https://www.kaggle.com/datasets/andrewmvd/car-plate-detection)<br>*(433 images, YOLO format)* | **99.44% mAP@50**<br>• Precision: 98.8%<br>• Recall: 100.0%<br>• Inference: ~12 ms | 3.2M params<br>`6.25 MB` | Sub-pixel license plate localization across diverse lighting & angles |
+| **Color Classifier**<br>[`color_classifier.pt`](backend/models/color_classifier.pt) | **Deep Learning (CNN)**<br>MobileNetV3-Small | [VCoR Vehicle Color](https://www.kaggle.com/datasets/landrykezebou/vcor-vehicle-color-recognition-dataset)<br>*(10,645 crops, 15 colors)* | **99.39% Val Accuracy**<br>• Loss: 0.0245<br>• Cross-Entropy<br>• Inference: ~8 ms | 1.5M params<br>`6.27 MB` | 15-class exterior color classification to detect swapped/cloned plates |
+| **Plate OCR Verifier**<br>[`plate_ocr_crnn.pt`](backend/models/plate_ocr_crnn.pt) | **Deep Learning (Residual CNN)**<br>ResNet-18 (8 Residual Blocks) | [Plate Digits Classification](https://www.kaggle.com/datasets/aladdinss/license-plate-digits-classification-dataset)<br>*(17,565 crops, 36 classes)* | **100.00% Val Accuracy**<br>• Training: 100.00%<br>• Loss: 0.0001<br>• Inference: ~15 ms | 11.2M params<br>`44.86 MB` | Character-level topological verification to catch taped digit alterations |
+| **Sequence OCR Reader**<br>`EasyOCR (Integrated)` | **Deep Learning (CRNN)**<br>VGG/ResNet + BiLSTM + CTC | Pretrained Multi-Language Alphanumeric + Indian Syntax Regex | **High-Fidelity OCR**<br>• Position-aware normalization<br>• Temporal majority voting | Dynamic Seq<br>CPU-tuned | Full alphanumeric transcription with Indian RTO standard syntax matching |
+| **Vehicle Detector**<br>[`yolov8n.pt`](yolov8n.pt) | **Deep Learning (CNN)**<br>YOLOv8 Nano (MS COCO) | MS COCO 2017 Benchmark<br>*(Extracts car, bus, truck, motorcycle)* | **>95% Vehicle Recall**<br>• 37.3% mAP@50 (COCO) | 3.2M params<br>`6.25 MB` | Vehicle bounding box extraction and ByteTrack motion state tracking |
 
 ---
 
@@ -96,21 +95,29 @@ All custom models were trained on **Google Colab (NVIDIA Tesla T4 GPU, 16 GB VRA
 
 ## 💻 4. Technology Stack
 
-### A. Frontend Architecture (Modernized Vue 3)
-* **Framework**: [Vue.js 3](https://vuejs.org/) (Composition API `<script setup>`).
-* **Build Tool**: [Vite 5](https://vitejs.dev/) with instantaneous HMR and optimized production asset chunking.
-* **GPU HUD Engine**: [PixiJS v7](https://pixijs.com/) rendering WebGL tactical targeting brackets, sub-pixel bounding boxes, and monospace HUD cards at a stable 60 FPS.
-* **Physics Motion**: [@motionone/vue](https://motion.dev/) powering spring-physics radial sweeps on the Bayesian Risk Gauge.
-* **Reporting Engine**: [jsPDF](https://github.com/parallax/jsPDF) & [jsPDF-AutoTable](https://github.com/simonbengtsson/jsPDF-AutoTable) for instant CSV exports and styled vector PDF law enforcement dossiers.
-* **Design System**: [Tailwind CSS v3](https://tailwindcss.com/) with an **Executive Enterprise Light Theme** featuring warm off-whites, neutral slate/stone cards, and **STRICTLY ZERO SHADES OF BLUE** (using onyx `#18181b`, emerald `#059669`, amber `#d97706`, and rose `#e11d48`).
-* **Clean Operator Navigation**: Developer debugging indicators (`Backend Online`, `Models Loaded`, `DB Active`) are completely decoupled from operator view to maintain a professional command-center workflow.
+### 🖥️ Frontend Architecture (Modernized Vue 3)
 
-### B. Backend Architecture
-* **API Framework**: [FastAPI](https://fastapi.tiangolo.com/) with asynchronous non-blocking request handlers, WebSockets, and Swagger docs (`/docs`).
-* **Inference Runtime**: [PyTorch 2.6](https://pytorch.org/) CPU-optimized execution engine (~35 ms total frame processing latency on 4GB RAM PCs).
-* **Database**: [SQLite](https://www.sqlite.org/) with Write-Ahead Logging (WAL) for thread-safe concurrent reads and writes (`backend/data/avnit.db`).
-* **Edge Telemetry Ingress**: `POST /api/telemetry/ingress` endpoint receiving real-time edge detections from roadside poles and broadcasting to connected dashboards.
-* **Testing**: [pytest](https://pytest.org/) automated test suite with Starlette client testing (16/16 tests passing).
+| Layer / Module | Technology | Version | Key Capabilities & Architectural Highlights |
+| :--- | :--- | :---: | :--- |
+| **Core Framework** | ![Vue.js](https://img.shields.io/badge/Vue.js-3.4-42b883?style=flat-square&logo=vuedotjs&logoColor=white) | `v3.4.31` | Composition API (`<script setup>`), reactive ref telemetry store, and modular composables. |
+| **Build & Tooling** | ![Vite](https://img.shields.io/badge/Vite-5.3-646cff?style=flat-square&logo=vite&logoColor=white) | `v5.3.1` | Ultra-fast Hot Module Replacement (HMR) and optimized Rollup code-splitting. |
+| **WebGL HUD Engine** | ![PixiJS](https://img.shields.io/badge/PixiJS-v7.4-e91e63?style=flat-square&logo=pixijs&logoColor=white) | `v7.4.2` | GPU-accelerated canvas overlay rendering sub-pixel targeting brackets, track IDs, and HUD cards at 60 FPS. |
+| **Motion Physics** | ![Motion](https://img.shields.io/badge/Motion_One-10.16-f59e0b?style=flat-square) | `v10.16.2` | Spring-physics animated radial sweep (0–100%) on the Bayesian Risk Gauge. |
+| **Reporting Engine** | ![jsPDF](https://img.shields.io/badge/jsPDF-2.5-e11d48?style=flat-square) | `v2.5.1` | Instant client-side generation of CSV spreadsheets and formatted vector PDF Law Enforcement Dossiers. |
+| **Design System** | ![Tailwind](https://img.shields.io/badge/Tailwind_CSS-3.4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white) | `v3.4.4` | Executive Enterprise Light Theme with warm off-whites, neutral slate cards, and **strictly zero shades of blue**. |
+| **Iconography** | ![Lucide](https://img.shields.io/badge/Lucide_Vue-0.39-f43f5e?style=flat-square) | `v0.395.0` | Crisp modern vector iconography tailored for transportation and security dashboards. |
+
+### ⚙️ Backend Architecture
+
+| Layer / Module | Technology | Version | Key Capabilities & Architectural Highlights |
+| :--- | :--- | :---: | :--- |
+| **API Framework** | ![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688?style=flat-square&logo=fastapi&logoColor=white) | `v0.100+` | Asynchronous non-blocking REST endpoints, persistent WebSockets, and automatic Swagger docs (`/docs`). |
+| **Inference Engine** | ![PyTorch](https://img.shields.io/badge/PyTorch-2.6%2B-ee4c2c?style=flat-square&logo=pytorch&logoColor=white) | `v2.6+` | CPU-optimized deep learning inference pipeline (~35 ms total latency per frame on 4GB RAM PCs). |
+| **Vision Runtime** | ![OpenCV](https://img.shields.io/badge/OpenCV-4.8%2B-5c3ee8?style=flat-square&logo=opencv&logoColor=white) | `v4.8+` | Video decoding, real-time CLAHE contrast enhancement, and automatic night mode HSV detection. |
+| **Vehicle Tracker** | ![ByteTrack](https://img.shields.io/badge/ByteTrack-Kalman-10b981?style=flat-square) | Built-in | 8-dimensional Kalman Filters and Hungarian assignment algorithm for persistent vehicle track association. |
+| **Registry Database** | ![SQLite](https://img.shields.io/badge/SQLite-WAL_Mode-003B57?style=flat-square&logo=sqlite&logoColor=white) | Native | Write-Ahead Logging (WAL) for thread-safe concurrent reads/writes of VAHAN records and audit trails. |
+| **Edge Ingress** | ![Edge](https://img.shields.io/badge/Edge_Ingress-REST-18181b?style=flat-square) | Built-in | Lightweight `POST /api/telemetry/ingress` endpoint receiving 2 KB telemetry pings from roadside pole agents. |
+| **Automated Testing**| ![pytest](https://img.shields.io/badge/pytest-9.1-0a9edc?style=flat-square&logo=pytest&logoColor=white) | `v9.1.1` | Comprehensive test suite covering API endpoints, database CRUD, OCR normalizer, and risk engine (16/16 pass). |
 
 ---
 
